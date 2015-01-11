@@ -1,0 +1,41 @@
+* Choosing 3d kind
+	* No 3d
+	* red/green
+	* red/blue
+	* red/yellow
+	* blue/yellow
+	* cross eyed
+	* Switching between left and right
+	* brightness
+* Making a 3d ship
+* Texturize it
+* Middle is light source
+* Loading and showing the 3d ship before the null paralaxis
+* Moving through space with clamp
+* Showing the middle somehow
+* Generating meteorids (3 sizes) in the middle
+* Moving meteorids
+* Shooting to meteorids
+* Splitting of meteorids when hit
+* Showing the edges
+* Showing the other site of the edge
+* Meteorid <-> Meteorid Collision handling
+* Meteorid <-> Ship Collision handling
+* Showing map with middle and meteorids before the null paralaxis
+* Showing edges in map
+* HUD:
+	* All time highscore
+	* score
+	* weapon count down
+* At start, what to do:
+	* Don't die
+	* Destroy meteoroids
+	* Collect items
+* items
+	* higher shoot frequenty
+	* more damage
+	* more bullets
+* Particle effect
+	* Collision
+	* Hit
+	* Movement in space
