@@ -78,10 +78,12 @@ void draw_stereo(void)
 	}
 
 	spStereoMergeSurfaces(screen,right_screen,crossedEyes);
-	spSelectRenderTarget(screen);
-	char buffer[256];
-	sprintf(buffer,"FPS: %i",spGetFPS());
-	spFontDrawRight(screen->w-2,screen->h-2-font->maxheight,0, buffer, font );
+	#ifdef DEBUG
+		spSelectRenderTarget(screen);
+		char buffer[256];
+		sprintf(buffer,"FPS: %i",spGetFPS());
+		spFontDrawRight(screen->w-2,screen->h-2-font->maxheight,0, buffer, font );
+	#endif
 	spFlip();
 }
 
