@@ -1,15 +1,22 @@
-/*
- The contents of this file are subject to the "do whatever you like"-license.
- That means: Do, whatver you want, this file is under public domain. It is an
- example for sparrow3d. Copy it and learn from it for your project and release
- it under every license you want. ;-)
- For feedback and questions about my Files and Projects please mail me,
- Alexander Matthes (Ziz) , zizsdl_at_googlemail.com
-*/
+ /* This file is part of meteoroid3d.
+  * meteoroid3d is free software: you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation, either version 2 of the License, or
+  * (at your option) any later version.
+  * 
+  * meteoroid3d is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+  * 
+  * You should have received a copy of the GNU General Public License
+  * along with meteoroid3d.  If not, see <http://www.gnu.org/licenses/>
+  * 
+  * For feedback and questions about my Files and Projects please mail me,
+  * Alexander Matthes (Ziz) , zizsdl_at_googlemail.com */
 #include <string.h>
 #include <sparrow3d.h>
-
-//#define SCALE_UP
+#include "glasses.h"
 
 #define DISTANCE 0.06f
 #define Z0 5.0f
@@ -20,9 +27,6 @@ spFontPointer font = NULL;
 Sint32 left_projection[16];
 Sint32 right_projection[16];
 SDL_Surface* right_screen;
-#ifdef SCALE_UP
-SDL_Surface* real_screen;
-#endif
 SDL_Surface* screen = NULL;
 SDL_Surface *sparrow;
 Sint32 rotation;
@@ -33,25 +37,16 @@ int crossedEyes = 0;
 void resize( Uint16 w, Uint16 h )
 {
 	spSelectRenderTarget(spGetWindowSurface());
-	#ifdef SCALE_UP
-		if (screen)
-			spDeleteSurface(screen);
-		screen = spCreateSurface(real_screen->w/2,real_screen->h/2);
-	#endif
 	if (right_screen)
 		spDeleteSurface(right_screen);
 	right_screen = spCreateSurface(screen->w,screen->h);
 
 	spStereoCreateProjectionMatrixes( left_projection, right_projection, 45.0, ( float )screen->w / ( float )screen->h, 1.0, 100.0f, Z0, DISTANCE , crossedEyes);
 
-	int scale = 0;
-	#ifdef SCALE_UP
-		scale++;
-	#endif
 	//Font Loading
 	if ( font )
 		spFontDelete( font );
-	font = spFontLoad( "./Play-Bold.ttf", spFixedToInt(12 * spGetSizeFactor())+scale );
+	font = spFontLoad( "./Play-Bold.ttf", spFixedToInt(12 * spGetSizeFactor()) );
 	spFontAdd( font, SP_FONT_GROUP_ASCII,              rightColor | leftColor); //whole ASCII
 	spFontAddButton( font, 'R', SP_BUTTON_START_NAME,  rightColor | leftColor, SP_ALPHA_COLOR ); //Return == START
 	spFontAddButton( font, 'B', SP_BUTTON_SELECT_NAME, rightColor | leftColor, SP_ALPHA_COLOR ); //Backspace == SELECT
@@ -145,9 +140,6 @@ void draw_test(void)
 	char buffer[256];
 	sprintf(buffer,"FPS: %i",spGetFPS());
 	spFontDrawRight(screen->w-2,screen->h-2-font->maxheight,0, buffer, font );
-	#ifdef SCALE_UP
-	spScale2XSmooth(screen,real_screen);
-	#endif
 	spFlip();
 }
 
@@ -174,21 +166,13 @@ int main(int argc, char **argv)
 	}
 	spInitCore();
 	//Setup
-	#ifdef SCALE_UP
-	real_screen = spCreateDefaultWindow();
-	resize( real_screen->w, real_screen->h );
-	#else
 	screen = spCreateDefaultWindow();
 	resize( screen->w, screen->h );
-	#endif
 	sparrow = spLoadSurface( "./sparrow.png" );
 	spSetLight(1);
 	spSetLightColor(0,SP_ONE*5,SP_ONE*5,SP_ONE*5);
 	spLoop(draw_test,calc_test,10,resize,NULL);
 	spDeleteSurface(sparrow);
-	#ifdef SCALE_UP
-	spDeleteSurface(screen);
-	#endif
 	spQuitCore();
 	return 0;
 }
