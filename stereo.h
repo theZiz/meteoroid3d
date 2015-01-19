@@ -15,9 +15,18 @@
   * For feedback and questions about my Files and Projects please mail me,
   * Alexander Matthes (Ziz) , zizsdl_at_googlemail.com */
 
-#include "glasses.h"
+#ifndef _STEREO_H
+#define _STEREO_H
 
-int show_glasses()
-{
-	
-}
+#include <sparrow3d.h>
+
+#define DISTANCE 0.06f
+#define Z0 5.0f
+#define MIN_Z (-SP_ONE*3/2)
+#define MAX_Z (-SP_ONE*10)
+
+void resize( Uint16 w, Uint16 h );
+void init_stereo();
+int stereo_loop ( void ( *draw )( int, Uint16 ), int ( *calc )( Uint32 steps ));
+
+#endif
