@@ -18,6 +18,8 @@
 #include "stereo.h"
 
 spFontPointer font = NULL;
+spFontPointer left_font = NULL;
+spFontPointer right_font = NULL;
 Sint32 left_projection[16];
 Sint32 right_projection[16];
 SDL_Surface* right_screen;
@@ -25,6 +27,63 @@ SDL_Surface* screen = NULL;
 Uint16 leftColor;
 Uint16 rightColor;
 int crossedEyes = 0;
+
+void reload_font()
+{
+	//Font Loading
+	if ( font )
+		spFontDelete( font );
+	font = spFontLoad( "./Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
+	spFontAdd( font, SP_FONT_GROUP_ASCII,              rightColor | leftColor); //whole ASCII
+	spFontAddButton( font, 'S', SP_BUTTON_START_NAME,  rightColor | leftColor, 0 ); //Return == START
+	spFontAddButton( font, 'E', SP_BUTTON_SELECT_NAME, rightColor | leftColor, 0 ); //Backspace == SELECT
+	spFontAddButton( font, 'l', SP_BUTTON_L_NAME,      rightColor | leftColor, 0 ); // q == L
+	spFontAddButton( font, 'e', SP_BUTTON_R_NAME,      rightColor | leftColor, 0 ); // e == R
+	spFontAddButton( font, 'o', SP_PRACTICE_OK_NAME,   rightColor | leftColor, 0 ); //a == left button
+	spFontAddButton( font, 'c', SP_PRACTICE_CANCEL_NAME,  rightColor | leftColor, 0 ); // d == right button
+	spFontAddButton( font, '3', SP_PRACTICE_3_NAME,     rightColor | leftColor, 0 ); // w == up button
+	spFontAddButton( font, '4', SP_PRACTICE_4_NAME,   rightColor | leftColor, 0 ); // s == down button
+	spFontAddArrowButton( font, '<', SP_BUTTON_ARROW_LEFT,  rightColor | leftColor, 0 );
+	spFontAddArrowButton( font, '^', SP_BUTTON_ARROW_UP,    rightColor | leftColor, 0 );
+	spFontAddArrowButton( font, '>', SP_BUTTON_ARROW_RIGHT, rightColor | leftColor, 0 );
+	spFontAddArrowButton( font, 'v', SP_BUTTON_ARROW_DOWN,  rightColor | leftColor, 0 );
+
+	//Font Loading
+	if ( left_font )
+		spFontDelete( left_font );
+	left_font = spFontLoad( "./Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
+	spFontAdd( left_font, SP_FONT_GROUP_ASCII,              leftColor); //whole ASCII
+	spFontAddButton( left_font, 'S', SP_BUTTON_START_NAME,  leftColor, 0 ); //Return == START
+	spFontAddButton( left_font, 'E', SP_BUTTON_SELECT_NAME, leftColor, 0 ); //Backspace == SELECT
+	spFontAddButton( left_font, 'l', SP_BUTTON_L_NAME,      leftColor, 0 ); // q == L
+	spFontAddButton( left_font, 'r', SP_BUTTON_R_NAME,      leftColor, 0 ); // e == R
+	spFontAddButton( left_font, 'o', SP_PRACTICE_OK_NAME,   leftColor, 0 ); //a == left button
+	spFontAddButton( left_font, 'c', SP_PRACTICE_CANCEL_NAME,  leftColor, 0 ); // d == right button
+	spFontAddButton( left_font, '3', SP_PRACTICE_3_NAME,     leftColor, 0 ); // w == up button
+	spFontAddButton( left_font, '4', SP_PRACTICE_4_NAME,   leftColor, 0 ); // s == down button
+	spFontAddArrowButton( left_font, '<', SP_BUTTON_ARROW_LEFT,  leftColor, 0 );
+	spFontAddArrowButton( left_font, '^', SP_BUTTON_ARROW_UP,    leftColor, 0 );
+	spFontAddArrowButton( left_font, '>', SP_BUTTON_ARROW_RIGHT, leftColor, 0 );
+	spFontAddArrowButton( left_font, 'v', SP_BUTTON_ARROW_DOWN,  leftColor, 0 );
+
+	//Font Loading
+	if ( right_font )
+		spFontDelete( right_font );
+	right_font = spFontLoad( "./Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
+	spFontAdd( right_font, SP_FONT_GROUP_ASCII,              rightColor); //whole ASCII
+	spFontAddButton( right_font, 'S', SP_BUTTON_START_NAME,  rightColor, 0 ); //Return == START
+	spFontAddButton( right_font, 'E', SP_BUTTON_SELECT_NAME, rightColor, 0 ); //Backspace == SELECT
+	spFontAddButton( right_font, 'l', SP_BUTTON_L_NAME,      rightColor, 0 ); // q == L
+	spFontAddButton( right_font, 'r', SP_BUTTON_R_NAME,      rightColor, 0 ); // e == R
+	spFontAddButton( right_font, 'o', SP_PRACTICE_OK_NAME,   rightColor, 0 ); //a == left button
+	spFontAddButton( right_font, 'c', SP_PRACTICE_CANCEL_NAME,  rightColor, 0 ); // d == right button
+	spFontAddButton( right_font, '3', SP_PRACTICE_3_NAME,     rightColor, 0 ); // w == up button
+	spFontAddButton( right_font, '4', SP_PRACTICE_4_NAME,   rightColor, 0 ); // s == down button
+	spFontAddArrowButton( right_font, '<', SP_BUTTON_ARROW_LEFT,  rightColor, 0 );
+	spFontAddArrowButton( right_font, '^', SP_BUTTON_ARROW_UP,    rightColor, 0 );
+	spFontAddArrowButton( right_font, '>', SP_BUTTON_ARROW_RIGHT, rightColor, 0 );
+	spFontAddArrowButton( right_font, 'v', SP_BUTTON_ARROW_DOWN,  rightColor, 0 );
+}
 
 void resize( Uint16 w, Uint16 h )
 {
@@ -35,22 +94,10 @@ void resize( Uint16 w, Uint16 h )
 
 	spStereoCreateProjectionMatrixes( left_projection, right_projection, 45.0, ( float )screen->w / ( float )screen->h, 1.0, 100.0f, Z0, DISTANCE , crossedEyes);
 
-	//Font Loading
-	if ( font )
-		spFontDelete( font );
-	font = spFontLoad( "./Play-Bold.ttf", spFixedToInt(12 * spGetSizeFactor()) );
-	spFontAdd( font, SP_FONT_GROUP_ASCII,              rightColor | leftColor); //whole ASCII
-	spFontAddButton( font, 'R', SP_BUTTON_START_NAME,  rightColor | leftColor, SP_ALPHA_COLOR ); //Return == START
-	spFontAddButton( font, 'B', SP_BUTTON_SELECT_NAME, rightColor | leftColor, SP_ALPHA_COLOR ); //Backspace == SELECT
-	spFontAddButton( font, 'q', SP_BUTTON_L_NAME,      rightColor | leftColor, SP_ALPHA_COLOR ); // q == L
-	spFontAddButton( font, 'e', SP_BUTTON_R_NAME,      rightColor | leftColor, SP_ALPHA_COLOR ); // e == R
-	spFontAddButton( font, 'a', SP_BUTTON_LEFT_NAME,   rightColor | leftColor, SP_ALPHA_COLOR ); //a == left button
-	spFontAddButton( font, 'd', SP_BUTTON_RIGHT_NAME,  rightColor | leftColor, SP_ALPHA_COLOR ); // d == right button
-	spFontAddButton( font, 'w', SP_BUTTON_UP_NAME,     rightColor | leftColor, SP_ALPHA_COLOR ); // w == up button
-	spFontAddButton( font, 's', SP_BUTTON_DOWN_NAME,   rightColor | leftColor, SP_ALPHA_COLOR ); // s == down button
+	reload_font();
 }
 
-void ( *draw_stereo_callback )( int, Uint16 ) = NULL;
+void ( *draw_stereo_callback )( int, Uint16, spFontPointer) = NULL;
 
 void draw_stereo(void)
 {
@@ -59,6 +106,7 @@ void draw_stereo(void)
 	for (eye = 0; eye < 2; eye++)
 	{
 		Uint16 color;
+		spFontPointer font;
 		switch (eye)
 		{
 			case 0:
@@ -66,15 +114,17 @@ void draw_stereo(void)
 				spSelectRenderTarget(screen);
 				memcpy(spGetProjectionMatrix(), left_projection,sizeof(Sint32)*16);
 				color = leftColor;
+				font = left_font;
 				break;
 			case 1:
 				//RIGHT
 				spSelectRenderTarget(right_screen);
 				memcpy(spGetProjectionMatrix(),right_projection,sizeof(Sint32)*16);
 				color = rightColor;
+				font = right_font;
 				break;
 		}
-		draw_stereo_callback(eye,color);	
+		draw_stereo_callback(eye,color,font);	
 	}
 
 	spStereoMergeSurfaces(screen,right_screen,crossedEyes);
@@ -87,26 +137,87 @@ void draw_stereo(void)
 	spFlip();
 }
 
-int stereo_loop ( void ( *draw )( int, Uint16 ), int ( *calc )( Uint32 steps ))
+int stereo_loop ( void ( *draw )( int, Uint16, spFontPointer), int ( *calc )( Uint32 steps ))
 {
-	void ( *old_callback )( int, Uint16 ) = draw_stereo_callback;
+	void ( *old_callback )( int, Uint16, spFontPointer) = draw_stereo_callback;
 	draw_stereo_callback = draw;
 	spLoop(draw_stereo,calc,10,resize,NULL);	
 	draw_stereo_callback = old_callback;
 }
 
-void init_stereo()
+int leftColorArray[3];
+int rightColorArray[3];
+int brightness;
+int flipped = 0;
+
+void set_flipped(int f)
 {
-	if (crossedEyes)
+	flipped = (f != 0);
+}
+
+int get_flipped()
+{
+	return flipped;
+}
+
+void set_brightness(int b)
+{
+	brightness = spMax(spMin(b,100),20);
+}
+
+int get_brightness()
+{
+	return brightness;
+}
+
+void set_some_color(int eye,int r,int g,int b)
+{
+	if (eye == 0)
 	{
-		leftColor  = spGetFastRGB(255,255,255);
-		rightColor = spGetFastRGB(255,255,255);
+		leftColorArray[0] = r;
+		leftColorArray[1] = g;
+		leftColorArray[2] = b;
+		leftColor = spGetRGB(r*brightness/100,g*brightness/100,b*brightness/100);
 	}
 	else
 	{
-		leftColor  = spGetFastRGB(196,  0,  0);
-		rightColor = spGetFastRGB(  0,196,  0);
+		rightColorArray[0] = r;
+		rightColorArray[1] = g;
+		rightColorArray[2] = b;
+		rightColor = spGetRGB(r*brightness/100,g*brightness/100,b*brightness/100);
 	}
+}
+
+void set_color(int lr,int lg,int lb,int rr,int rg,int rb)
+{
+	set_some_color(  flipped,lr,lg,lb);
+	set_some_color(1-flipped,rr,rg,rb);
+	reload_font();
+}
+
+spConfigPointer stereo_config;
+
+void save_stereo()
+{
+	spConfigSetInt(stereo_config,"brightness",brightness);
+	spConfigSetInt(stereo_config,"stereo_mode",get_glasses());
+	spConfigSetBool(stereo_config,"flipped",flipped);
+	spConfigWrite(stereo_config);
+}
+
+void init_stereo()
+{
+	stereo_config = spConfigRead("stereo.ini","meteoroid3d");
+	set_brightness(spConfigGetInt(stereo_config,"brightness",80));
+	set_glasses(spConfigGetInt(stereo_config,"stereo_mode",0));
+	flipped = spConfigGetBool(stereo_config,"flipped",0);
 	screen = spCreateDefaultWindow();
+	set_color(
+		get_color_value(0,0),
+		get_color_value(0,1),
+		get_color_value(0,2),
+		get_color_value(1,0),
+		get_color_value(1,1),
+		get_color_value(1,2));
 	resize( screen->w, screen->h );
 }

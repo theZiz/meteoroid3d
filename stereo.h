@@ -27,6 +27,10 @@
 
 void resize( Uint16 w, Uint16 h );
 void init_stereo();
-int stereo_loop ( void ( *draw )( int, Uint16 ), int ( *calc )( Uint32 steps ));
+int stereo_loop ( void ( *draw )( int, Uint16, spFontPointer ), int ( *calc )( Uint32 steps ));
+void set_color(int lr,int lg,int lb,int rr,int rg,int rb);
+int get_brightness();
+void set_flipped(int f);
+int get_flipped();
 
 #endif

@@ -22,7 +22,7 @@
 Sint32 rotation = 0;
 SDL_Surface *sparrow;
 
-void draw_test(int eye,Uint16 color)
+void draw_test(int eye,Uint16 color,spFontPointer font)
 {
 	spIdentity();
 	spResetZBuffer();
@@ -82,8 +82,7 @@ void draw_test(int eye,Uint16 color)
 int calc_test(Uint32 steps)
 {
 	rotation += steps * 32;
-	PspInput engineInput = spGetInput();
-	if (engineInput->button[SP_BUTTON_START])
+	if (spGetInput()->button[SP_BUTTON_START])
 		return 1;
 	return 0;
 }
@@ -92,6 +91,7 @@ int main(int argc, char **argv)
 {
 	spInitCore();
 	init_stereo();
+	show_glasses();
 	sparrow = spLoadSurface( "./sparrow.png" );
 	spSetLight(1);
 	spSetLightColor(0,SP_ONE*5,SP_ONE*5,SP_ONE*5);

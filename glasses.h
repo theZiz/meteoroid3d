@@ -18,5 +18,9 @@
 #ifndef _GLASSES_H
 #define _GLASSES_H
 
+int show_glasses();
+int set_glasses(int mode);
+int get_color_value(int eye,int c_pos);
+int get_glasses();
 
 #endif
