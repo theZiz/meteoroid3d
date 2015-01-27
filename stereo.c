@@ -33,7 +33,7 @@ void reload_font()
 	//Font Loading
 	if ( font )
 		spFontDelete( font );
-	font = spFontLoad( "./Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
+	font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
 	spFontAdd( font, SP_FONT_GROUP_ASCII,              rightColor | leftColor); //whole ASCII
 	spFontAddButton( font, 'S', SP_BUTTON_START_NAME,  rightColor | leftColor, 0 ); //Return == START
 	spFontAddButton( font, 'E', SP_BUTTON_SELECT_NAME, rightColor | leftColor, 0 ); //Backspace == SELECT
@@ -51,7 +51,7 @@ void reload_font()
 	//Font Loading
 	if ( left_font )
 		spFontDelete( left_font );
-	left_font = spFontLoad( "./Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
+	left_font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
 	spFontAdd( left_font, SP_FONT_GROUP_ASCII,              leftColor); //whole ASCII
 	spFontAddButton( left_font, 'S', SP_BUTTON_START_NAME,  leftColor, 0 ); //Return == START
 	spFontAddButton( left_font, 'E', SP_BUTTON_SELECT_NAME, leftColor, 0 ); //Backspace == SELECT
@@ -69,7 +69,7 @@ void reload_font()
 	//Font Loading
 	if ( right_font )
 		spFontDelete( right_font );
-	right_font = spFontLoad( "./Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
+	right_font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
 	spFontAdd( right_font, SP_FONT_GROUP_ASCII,              rightColor); //whole ASCII
 	spFontAddButton( right_font, 'S', SP_BUTTON_START_NAME,  rightColor, 0 ); //Return == START
 	spFontAddButton( right_font, 'E', SP_BUTTON_SELECT_NAME, rightColor, 0 ); //Backspace == SELECT

@@ -20,6 +20,8 @@
 #include <sparrow3d.h>
 
 SDL_Surface* glasses = NULL;
+Sint32 g_rot = 0;
+
 char glasses_names[5][32] = {
 	"Red & Cyan",
 	"Red & Green",
@@ -61,7 +63,8 @@ void draw_glasses(int eye,Uint16 color,spFontPointer font)
 	spSetZSet(1);
 	spSetZTest(1);
 	spSetAlphaTest(1);
-	spTranslate(0,SP_ONE/8, spFloatToFixed(-Z0+3.5f));
+	spTranslate(0,SP_ONE/6, spFloatToFixed(-Z0+3.2f));
+	
 	spBindTexture( glasses );
 	int x = spFloatToFixed(  0.5f );
 	int y = spFloatToFixed( 0.15f );
@@ -70,10 +73,12 @@ void draw_glasses(int eye,Uint16 color,spFontPointer font)
 	spFontDrawMiddle(px,py-font->maxheight/2,pz,"Choose your 3d glasses ([<][>])",font);
 	spProjectPoint3D(0,-SP_ONE/4,0,&px,&py,&pz,&w,1);
 	spFontDrawMiddle(px,py-font->maxheight/2,pz,glasses_names[choosen_glasses],font);
+	spRotateY(spSin(g_rot)/2);
 	spQuadTex3D( -x,  y, 0 , get_flipped()?glasses->w-1:0, 0,
 				 -x, -y, 0 , get_flipped()?glasses->w-1:0, glasses->h - 1,
 				  x, -y, 0 , get_flipped()?0:glasses->w-1, glasses->h - 1,
 				  x,  y, 0 , get_flipped()?0:glasses->w-1, 0, color );
+	spRotateY(-spSin(g_rot)/2);
 	spTranslate(0,-SP_ONE/3,0);
 	spProjectPoint3D(0,0,0,&px,&py,&pz,&w,1);
 	char buffer[64];
@@ -91,6 +96,7 @@ int old_pressed = 200;
 
 int calc_glasses(Uint32 steps)
 {
+	g_rot += steps*128;
 	if (spGetInput()->button[SP_PRACTICE_OK])
 	{
 		spGetInput()->button[SP_PRACTICE_OK] = 0;
