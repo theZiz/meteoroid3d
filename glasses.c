@@ -22,7 +22,10 @@
 SDL_Surface* glasses = NULL;
 Sint32 g_rot = 0;
 
-char glasses_names[5][32] = {
+#define GLASSES_COUNT 6
+
+char glasses_names[GLASSES_COUNT][32] = {
+	"None",
 	"Red & Cyan",
 	"Red & Green",
 	"Magenta & Green",
@@ -30,19 +33,20 @@ char glasses_names[5][32] = {
 	"Red & Blue"
 };
 
-int glasses_color[5][2][3] = {
+int glasses_color[GLASSES_COUNT][2][3] = {
+	{{255,255,255},{255,255,255}},
 	{{255,0,0},{0,255,255}},
 	{{255,0,0},{0,255,0}},
 	{{240,0,255},{0,255,0}},
 	{{255,255,0},{0,0,255}},
-	{{240,0,0},{0,0,255}}
+	{{196,0,0},{0,0,255}}
 };
 
 int choosen_glasses = 0;
 
 int set_glasses(int mode)
 {
-	choosen_glasses = abs(mode)%5;
+	choosen_glasses = abs(mode)%GLASSES_COUNT;
 }
 
 int get_glasses()
@@ -63,7 +67,7 @@ void draw_glasses(int eye,Uint16 color,spFontPointer font)
 	spSetZSet(1);
 	spSetZTest(1);
 	spSetAlphaTest(1);
-	spTranslate(0,SP_ONE/6, spFloatToFixed(-Z0+3.2f));
+	spTranslate(0,SP_ONE/7, spFloatToFixed(-Z0+3.2f));
 	
 	spBindTexture( glasses );
 	int x = spFloatToFixed(  0.5f );
@@ -142,12 +146,12 @@ int calc_glasses(Uint32 steps)
 	if (spGetInput()->axis[0] < 0)
 	{
 		spGetInput()->axis[0] = 0;
-		next_glasses = (choosen_glasses+4)%5;
+		next_glasses = (choosen_glasses+GLASSES_COUNT-1)%GLASSES_COUNT;
 	}
 	if (spGetInput()->axis[0] > 0)
 	{
 		spGetInput()->axis[0] = 0;
-		next_glasses = (choosen_glasses+1)%5;
+		next_glasses = (choosen_glasses+1)%GLASSES_COUNT;
 	}
 	if (next_glasses != choosen_glasses || pressed || just_flipped)
 	{
@@ -167,8 +171,6 @@ int show_glasses()
 {
 	glasses = spLoadSurface("./data/glasses.png");
 	spSelectRenderTarget(glasses);
-	//spFloodFill( 80,40,spGetRGB(255,  0,  0));
-	//spFloodFill(180,40,spGetRGB(  0,255,255));
 	next_glasses = choosen_glasses;
 	stereo_loop(draw_glasses,calc_glasses);
 	save_stereo();

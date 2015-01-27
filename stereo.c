@@ -21,6 +21,7 @@ spFontPointer font = NULL;
 spFontPointer left_font = NULL;
 spFontPointer right_font = NULL;
 Sint32 left_projection[16];
+Sint32 middle_projection[16];
 Sint32 right_projection[16];
 SDL_Surface* right_screen;
 SDL_Surface* screen = NULL;
@@ -91,7 +92,8 @@ void resize( Uint16 w, Uint16 h )
 	if (right_screen)
 		spDeleteSurface(right_screen);
 	right_screen = spCreateSurface(screen->w,screen->h);
-
+	
+	spSetPerspectiveStereoscopic( middle_projection, 45.0, ( float )screen->w / ( float )screen->h, 1.0, 100.0f, Z0, 0);
 	spStereoCreateProjectionMatrixes( left_projection, right_projection, 45.0, ( float )screen->w / ( float )screen->h, 1.0, 100.0f, Z0, DISTANCE , crossedEyes);
 
 	reload_font();
@@ -102,7 +104,14 @@ void ( *draw_stereo_callback )( int, Uint16, spFontPointer) = NULL;
 void draw_stereo(void)
 {
 	Sint32* modellViewMatrix=spGetMatrix();
-	int eye;
+	int eye;	
+	if (get_glasses() == 0)
+	{
+		spSelectRenderTarget(screen);
+		memcpy(spGetProjectionMatrix(), middle_projection,sizeof(Sint32)*16);
+		draw_stereo_callback(0,leftColor,left_font);
+	}
+	else
 	for (eye = 0; eye < 2; eye++)
 	{
 		Uint16 color;
@@ -126,8 +135,8 @@ void draw_stereo(void)
 		}
 		draw_stereo_callback(eye,color,font);	
 	}
-
-	spStereoMergeSurfaces(screen,right_screen,crossedEyes);
+	if (get_glasses() != 0)
+		spStereoMergeSurfaces(screen,right_screen,crossedEyes);
 	#ifdef DEBUG
 		spSelectRenderTarget(screen);
 		char buffer[256];
@@ -211,6 +220,7 @@ void init_stereo()
 	set_brightness(spConfigGetInt(stereo_config,"brightness",80));
 	set_glasses(spConfigGetInt(stereo_config,"stereo_mode",0));
 	flipped = spConfigGetBool(stereo_config,"flipped",0);
+	spSetDefaultWindowSize( 800, 480 );
 	screen = spCreateDefaultWindow();
 	set_color(
 		get_color_value(0,0),
