@@ -35,9 +35,9 @@ all: meteoroid3d
 targets:
 	@echo "The targets are the same like for sparrow3d. :P"
 
-meteoroid3d: meteoroid3d.c glasses.o stereo.o matrix.o makeBuildDir
+meteoroid3d: meteoroid3d.c glasses.o stereo.o matrix.o space.o makeBuildDir
 	cp -u $(SPARROW_LIB)/$(SPARROW3D_LIB) $(BUILD)
-	$(CC) $(CFLAGS) meteoroid3d.c glasses.o stereo.o matrix.o $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/meteoroid3d$(SUFFIX)
+	$(CC) $(CFLAGS) meteoroid3d.c glasses.o stereo.o matrix.o space.o $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/meteoroid3d$(SUFFIX)
 
 glasses.o: glasses.c glasses.h
 	$(CC) $(CFLAGS) -c glasses.c $(SDL) $(INCLUDE)
@@ -47,6 +47,9 @@ stereo.o: stereo.c stereo.h
 
 matrix.o: matrix.c matrix.h
 	$(CC) $(CFLAGS) -c matrix.c $(SDL) $(INCLUDE)
+
+space.o: space.c space.h
+	$(CC) $(CFLAGS) -c space.c $(SDL) $(INCLUDE)
 
 makeBuildDir:
 	 @if [ ! -d $(BUILD:/meteoroid3d=/) ]; then mkdir $(BUILD:/meteoroid3d=/);fi

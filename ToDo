@@ -1,17 +1,4 @@
-* Choosing 3d kind
-	* No 3d
-	* red/green
-	* red/blue
-	* red/yellow
-	* blue/yellow
-	* cross eyed
-	* Switching between left and right
-	* brightness
-* Making a 3d ship
-* Texturize it
 * Middle is light source
-* Loading and showing the 3d ship before the null paralaxis
-* Moving through space with clamp
 * Showing the middle somehow
 * Generating meteorids (3 sizes) in the middle
 * Moving meteorids
