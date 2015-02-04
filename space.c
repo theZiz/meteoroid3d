@@ -28,6 +28,7 @@ spModelPointer middle_mesh;
 #define STONE_COUNT 32
 spModelPointer stone_mesh[STONE_COUNT*3];
 Uint16 mom_color;
+spSound *laser,*explosion;
 
 typedef struct sStone *pStone;
 typedef struct sStone
@@ -109,7 +110,7 @@ int meteroid_feedback( spParticleBunchPointer bunch, Sint32 action, Sint32 extra
 			if (bunch->particle[i].status >= 2000)
 				continue;
 			//spSetAlphaPattern(500-bunch->particle[i].status,*ptr);
-			Uint16 color = mom_color;//spGetRGB(r-bunch->particle[i].status*r/128,g-bunch->particle[i].status*g/128,b-bunch->particle[i].status*b/128);
+			Uint16 color = spGetRGB(r-bunch->particle[i].status*r/2000,g-bunch->particle[i].status*g/2000,b-bunch->particle[i].status*b/2000);
 			spEllipse3D(bunch->particle[i].x-ship.x,bunch->particle[i].y-ship.y,bunch->particle[i].z-ship.z,SP_ONE/64,SP_ONE/64,color);
 		}
 		//spDeactivatePattern();
@@ -271,6 +272,7 @@ int rotation_acceleration = 0;
 
 void shoot()
 {
+	spSoundPlay(laser,-1,0,0,0);
 	pBullet bullet = (pBullet)malloc(sizeof(tBullet));
 	bullet->next = first_bullet;
 	first_bullet = bullet;
@@ -392,7 +394,8 @@ void wums(Sint32 x,Sint32 y,Sint32 z,Sint32 count,int r)
 
 void delete_stone(pStone stone,pStone before)
 {
-	score += (100 >> stone->size);
+	spSoundPlay(explosion,-1,0,0,0);
+	score += (25 << stone->size);
 	if (before)
 		before->next = stone->next;
 	else
@@ -560,7 +563,8 @@ void draw_space(Uint16 color)
 	Uint16 dark = spGetRGB(
 		spGetRFromColor(color)/2,
 		spGetGFromColor(color)/2,
-		spGetBFromColor(color)/2);	mom_color = color;
+		spGetBFromColor(color)/2);
+	mom_color = color;
 	spPushModelView();
 	spTranslate(-ship.x,-ship.y,-ship.z+spFloatToFixed(-2.0f));
 	ship.mesh->color = color;
@@ -705,6 +709,7 @@ void init_game()
 	ship.x = 0;
 	ship.y = 0;
 	ship.z = MAX_SPACE/2;
+	ship.power = 0;
 	memset(ship.rotation,0,sizeof(float)*16);
 	ship.rotation[0] = ship.rotation[5] = ship.rotation[10] = ship.rotation[15] = 1.0f;
 	int i;
@@ -717,6 +722,8 @@ void init_game()
 
 void init_ship()
 {
+	explosion = spSoundLoad("./data/explosion.wav");
+	laser = spSoundLoad("./data/laser.wav");
 	ship.original_texture = spLoadSurface( "./data/ship_texture.png" );
 	ship.texture = spCreateSurface(ship.original_texture->w,ship.original_texture->h);
 	ship.mesh = spMeshLoadObjSize("./data/ship.obj", ship.texture, 65535, SP_ONE/6);
@@ -772,6 +779,8 @@ void finish_game()
 
 void finish_ship()
 {
+	spSoundDelete(explosion);
+	spSoundDelete(laser);
 	spMeshDelete(ship.mesh);
 	spMeshDelete(middle_mesh);
 	int i;

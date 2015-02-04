@@ -34,5 +34,6 @@ void set_flipped(int f);
 int get_flipped();
 void set_alltime(int value);
 int get_alltime();
-
+int get_volume();
+void set_volume(int v);
 #endif

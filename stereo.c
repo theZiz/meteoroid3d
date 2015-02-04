@@ -29,6 +29,23 @@ Uint16 leftColor;
 Uint16 rightColor;
 int crossedEyes = 0;
 int alltime = 0;
+int volume = 1024;
+
+int get_volume()
+{
+	return volume;
+}
+
+void set_volume(int v)
+{
+	if (v < 0)
+		v = 0;
+	if (v > 2048)
+		v = 2048;
+	volume = v;
+	spSoundSetMusicVolume(volume>>4);
+	spSoundSetVolume(volume>>4);
+}
 
 void reload_font()
 {
@@ -55,48 +72,55 @@ void reload_font()
 	spFontAddArrowButton( font, 'v', SP_BUTTON_ARROW_DOWN,  rightColor | leftColor, 0 );
 
 	//Font Loading
+	Uint16 dark = spGetRGB(
+		spGetRFromColor(leftColor)/2,
+		spGetGFromColor(leftColor)/2,
+		spGetBFromColor(leftColor)/2);
 	if ( left_font )
 		spFontDelete( left_font );
 	left_font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
 	spFontAdd( left_font, SP_FONT_GROUP_ASCII,              leftColor); //whole ASCII
-	spFontAddButton( left_font, 'S', SP_BUTTON_START_NAME,  leftColor, 0 ); //Return == START
-	spFontAddButton( left_font, 'E', SP_BUTTON_SELECT_NAME, leftColor, 0 ); //Backspace == SELECT
-	spFontAddButton( left_font, 'l', SP_BUTTON_L_NAME,      leftColor, 0 ); // q == L
-	spFontAddButton( left_font, 'r', SP_BUTTON_R_NAME,      leftColor, 0 ); // e == R
-	spFontAddButton( left_font, 'o', SP_PRACTICE_OK_NAME,   leftColor, 0 ); //a == left button
-	spFontAddButton( left_font, 'c', SP_PRACTICE_CANCEL_NAME,  leftColor, 0 ); // d == right button
-	spFontAddButton( left_font, '3', SP_PRACTICE_3_NAME,     leftColor, 0 ); // w == up button
-	spFontAddButton( left_font, '4', SP_PRACTICE_4_NAME,   leftColor, 0 ); // s == down button
-	spFontAddButton( left_font, 'a', SP_BUTTON_LEFT_NAME,   leftColor, 0 ); //a == left button
-	spFontAddButton( left_font, 'w', SP_BUTTON_UP_NAME,  leftColor, 0 ); // d == right button
-	spFontAddButton( left_font, 'd', SP_BUTTON_RIGHT_NAME,     leftColor, 0 ); // w == up button
-	spFontAddButton( left_font, 's', SP_BUTTON_DOWN_NAME,   leftColor, 0 ); // s == down button
-	spFontAddArrowButton( left_font, '<', SP_BUTTON_ARROW_LEFT,  leftColor, 0 );
-	spFontAddArrowButton( left_font, '^', SP_BUTTON_ARROW_UP,    leftColor, 0 );
-	spFontAddArrowButton( left_font, '>', SP_BUTTON_ARROW_RIGHT, leftColor, 0 );
-	spFontAddArrowButton( left_font, 'v', SP_BUTTON_ARROW_DOWN,  leftColor, 0 );
+	spFontAddButton( left_font, 'S', SP_BUTTON_START_NAME,  leftColor, dark ); //Return == START
+	spFontAddButton( left_font, 'E', SP_BUTTON_SELECT_NAME, leftColor, dark ); //Backspace == SELECT
+	spFontAddButton( left_font, 'l', SP_BUTTON_L_NAME,      leftColor, dark ); // q == L
+	spFontAddButton( left_font, 'r', SP_BUTTON_R_NAME,      leftColor, dark ); // e == R
+	spFontAddButton( left_font, 'o', SP_PRACTICE_OK_NAME,   leftColor, dark ); //a == left button
+	spFontAddButton( left_font, 'c', SP_PRACTICE_CANCEL_NAME,  leftColor, dark ); // d == right button
+	spFontAddButton( left_font, '3', SP_PRACTICE_3_NAME,     leftColor, dark ); // w == up button
+	spFontAddButton( left_font, '4', SP_PRACTICE_4_NAME,   leftColor, dark ); // s == down button
+	spFontAddButton( left_font, 'a', SP_BUTTON_LEFT_NAME,   leftColor, dark ); //a == left button
+	spFontAddButton( left_font, 'w', SP_BUTTON_UP_NAME,  leftColor, dark ); // d == right button
+	spFontAddButton( left_font, 'd', SP_BUTTON_RIGHT_NAME,     leftColor, dark ); // w == up button
+	spFontAddButton( left_font, 's', SP_BUTTON_DOWN_NAME,   leftColor, dark ); // s == down button
+	spFontAddArrowButton( left_font, '<', SP_BUTTON_ARROW_LEFT,  leftColor, dark );
+	spFontAddArrowButton( left_font, '^', SP_BUTTON_ARROW_UP,    leftColor, dark );
+	spFontAddArrowButton( left_font, '>', SP_BUTTON_ARROW_RIGHT, leftColor, dark );
+	spFontAddArrowButton( left_font, 'v', SP_BUTTON_ARROW_DOWN,  leftColor, dark );
 
 	//Font Loading
-	if ( right_font )
+	dark = spGetRGB(
+		spGetRFromColor(rightColor)/2,
+		spGetGFromColor(rightColor)/2,
+		spGetBFromColor(rightColor)/2);	if ( right_font )
 		spFontDelete( right_font );
 	right_font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
 	spFontAdd( right_font, SP_FONT_GROUP_ASCII,              rightColor); //whole ASCII
-	spFontAddButton( right_font, 'S', SP_BUTTON_START_NAME,  rightColor, 0 ); //Return == START
-	spFontAddButton( right_font, 'E', SP_BUTTON_SELECT_NAME, rightColor, 0 ); //Backspace == SELECT
-	spFontAddButton( right_font, 'l', SP_BUTTON_L_NAME,      rightColor, 0 ); // q == L
-	spFontAddButton( right_font, 'r', SP_BUTTON_R_NAME,      rightColor, 0 ); // e == R
-	spFontAddButton( right_font, 'o', SP_PRACTICE_OK_NAME,   rightColor, 0 ); //a == left button
-	spFontAddButton( right_font, 'c', SP_PRACTICE_CANCEL_NAME,  rightColor, 0 ); // d == right button
-	spFontAddButton( right_font, '3', SP_PRACTICE_3_NAME,     rightColor, 0 ); // w == up button
-	spFontAddButton( right_font, '4', SP_PRACTICE_4_NAME,   rightColor, 0 ); // s == down button
-	spFontAddButton( right_font, 'a', SP_BUTTON_LEFT_NAME,   rightColor, 0 ); //a == left button
-	spFontAddButton( right_font, 'w', SP_BUTTON_UP_NAME,  rightColor, 0 ); // d == right button
-	spFontAddButton( right_font, 'd', SP_BUTTON_RIGHT_NAME,     rightColor, 0 ); // w == up button
-	spFontAddButton( right_font, 's', SP_BUTTON_DOWN_NAME,   rightColor, 0 ); // s == down button
-	spFontAddArrowButton( right_font, '<', SP_BUTTON_ARROW_LEFT,  rightColor, 0 );
-	spFontAddArrowButton( right_font, '^', SP_BUTTON_ARROW_UP,    rightColor, 0 );
-	spFontAddArrowButton( right_font, '>', SP_BUTTON_ARROW_RIGHT, rightColor, 0 );
-	spFontAddArrowButton( right_font, 'v', SP_BUTTON_ARROW_DOWN,  rightColor, 0 );
+	spFontAddButton( right_font, 'S', SP_BUTTON_START_NAME,  rightColor, dark ); //Return == START
+	spFontAddButton( right_font, 'E', SP_BUTTON_SELECT_NAME, rightColor, dark ); //Backspace == SELECT
+	spFontAddButton( right_font, 'l', SP_BUTTON_L_NAME,      rightColor, dark ); // q == L
+	spFontAddButton( right_font, 'r', SP_BUTTON_R_NAME,      rightColor, dark ); // e == R
+	spFontAddButton( right_font, 'o', SP_PRACTICE_OK_NAME,   rightColor, dark ); //a == left button
+	spFontAddButton( right_font, 'c', SP_PRACTICE_CANCEL_NAME,  rightColor, dark ); // d == right button
+	spFontAddButton( right_font, '3', SP_PRACTICE_3_NAME,     rightColor, dark ); // w == up button
+	spFontAddButton( right_font, '4', SP_PRACTICE_4_NAME,   rightColor, dark ); // s == down button
+	spFontAddButton( right_font, 'a', SP_BUTTON_LEFT_NAME,   rightColor, dark ); //a == left button
+	spFontAddButton( right_font, 'w', SP_BUTTON_UP_NAME,  rightColor, dark ); // d == right button
+	spFontAddButton( right_font, 'd', SP_BUTTON_RIGHT_NAME,     rightColor, dark ); // w == up button
+	spFontAddButton( right_font, 's', SP_BUTTON_DOWN_NAME,   rightColor, dark ); // s == down button
+	spFontAddArrowButton( right_font, '<', SP_BUTTON_ARROW_LEFT,  rightColor, dark );
+	spFontAddArrowButton( right_font, '^', SP_BUTTON_ARROW_UP,    rightColor, dark );
+	spFontAddArrowButton( right_font, '>', SP_BUTTON_ARROW_RIGHT, rightColor, dark );
+	spFontAddArrowButton( right_font, 'v', SP_BUTTON_ARROW_DOWN,  rightColor, dark );
 }
 
 void resize( Uint16 w, Uint16 h )
@@ -163,8 +187,9 @@ int stereo_loop ( void ( *draw )( int, Uint16, spFontPointer), int ( *calc )( Ui
 {
 	void ( *old_callback )( int, Uint16, spFontPointer) = draw_stereo_callback;
 	draw_stereo_callback = draw;
-	spLoop(draw_stereo,calc,10,resize,NULL);	
+	int res = spLoop(draw_stereo,calc,10,resize,NULL);	
 	draw_stereo_callback = old_callback;
+	return res;
 }
 
 int leftColorArray[3];
@@ -236,6 +261,7 @@ void save_stereo()
 	spConfigSetInt(stereo_config,"stereo_mode",get_glasses());
 	spConfigSetBool(stereo_config,"flipped",flipped);
 	spConfigSetInt(stereo_config,"alltime",alltime);
+	spConfigSetInt(stereo_config,"volume",volume);
 	spConfigWrite(stereo_config);
 }
 
@@ -246,6 +272,7 @@ void init_stereo()
 	set_glasses(spConfigGetInt(stereo_config,"stereo_mode",0));
 	flipped = spConfigGetBool(stereo_config,"flipped",0);
 	set_alltime(spConfigGetInt(stereo_config,"alltime",0));
+	set_volume(spConfigGetInt(stereo_config,"volume",64));
 	spSetDefaultWindowSize( 800, 480 );
 	screen = spCreateDefaultWindow();
 	set_color(
