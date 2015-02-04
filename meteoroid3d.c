@@ -21,6 +21,7 @@
 #include "matrix.h"
 #include "space.h"
 
+spNetC4AProfilePointer profile;
 
 int first = 1;
 
@@ -121,6 +122,7 @@ int calc(Uint32 steps)
 		{
 			spGetInput()->button[SP_BUTTON_LEFT] = 0;
 			first = -1;
+			spNetC4ACommitScore(profile,"meteoroid3d",get_score(),NULL,0);
 		}
 	}
 	return 0;
@@ -131,6 +133,11 @@ int main(int argc, char **argv)
 	spInitCore();
 	spInitNet();
 	spSoundInit();
+	profile = spNetC4AGetProfile();
+	if (profile == NULL)
+		printf("C4A-Manager or Mini-C4A not installed.");
+	else
+		spNetC4ASetCaching(2);
 	init_stereo();
 	last_volume = get_volume();
 	show_glasses();
@@ -146,6 +153,13 @@ int main(int argc, char **argv)
 	}
 	spSoundStopMusic(0);
 	finish_ship();
+	if (profile)
+	{
+		if (spNetC4ACommitScore(profile,"",0,NULL,10000) == 0)
+			while (spNetC4AGetStatus() == SP_C4A_PROGRESS)
+				spSleep(10000);
+		spNetC4AFreeProfile(profile);
+	}
 	spQuitCore();
 	spQuitNet();
 	spSoundQuit();
