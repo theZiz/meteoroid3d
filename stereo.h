@@ -32,5 +32,7 @@ void set_color(int lr,int lg,int lb,int rr,int rg,int rb);
 int get_brightness();
 void set_flipped(int f);
 int get_flipped();
+void set_alltime(int value);
+int get_alltime();
 
 #endif

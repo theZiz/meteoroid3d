@@ -28,6 +28,7 @@ SDL_Surface* screen = NULL;
 Uint16 leftColor;
 Uint16 rightColor;
 int crossedEyes = 0;
+int alltime = 0;
 
 void reload_font()
 {
@@ -44,6 +45,10 @@ void reload_font()
 	spFontAddButton( font, 'c', SP_PRACTICE_CANCEL_NAME,  rightColor | leftColor, 0 ); // d == right button
 	spFontAddButton( font, '3', SP_PRACTICE_3_NAME,     rightColor | leftColor, 0 ); // w == up button
 	spFontAddButton( font, '4', SP_PRACTICE_4_NAME,   rightColor | leftColor, 0 ); // s == down button
+	spFontAddButton( font, 'a', SP_BUTTON_LEFT_NAME,   rightColor | leftColor, 0 ); //a == left button
+	spFontAddButton( font, 'w', SP_BUTTON_UP_NAME,  rightColor | leftColor, 0 ); // d == right button
+	spFontAddButton( font, 'd', SP_BUTTON_RIGHT_NAME,     rightColor | leftColor, 0 ); // w == up button
+	spFontAddButton( font, 's', SP_BUTTON_DOWN_NAME,   rightColor | leftColor, 0 ); // s == down button
 	spFontAddArrowButton( font, '<', SP_BUTTON_ARROW_LEFT,  rightColor | leftColor, 0 );
 	spFontAddArrowButton( font, '^', SP_BUTTON_ARROW_UP,    rightColor | leftColor, 0 );
 	spFontAddArrowButton( font, '>', SP_BUTTON_ARROW_RIGHT, rightColor | leftColor, 0 );
@@ -62,6 +67,10 @@ void reload_font()
 	spFontAddButton( left_font, 'c', SP_PRACTICE_CANCEL_NAME,  leftColor, 0 ); // d == right button
 	spFontAddButton( left_font, '3', SP_PRACTICE_3_NAME,     leftColor, 0 ); // w == up button
 	spFontAddButton( left_font, '4', SP_PRACTICE_4_NAME,   leftColor, 0 ); // s == down button
+	spFontAddButton( left_font, 'a', SP_BUTTON_LEFT_NAME,   leftColor, 0 ); //a == left button
+	spFontAddButton( left_font, 'w', SP_BUTTON_UP_NAME,  leftColor, 0 ); // d == right button
+	spFontAddButton( left_font, 'd', SP_BUTTON_RIGHT_NAME,     leftColor, 0 ); // w == up button
+	spFontAddButton( left_font, 's', SP_BUTTON_DOWN_NAME,   leftColor, 0 ); // s == down button
 	spFontAddArrowButton( left_font, '<', SP_BUTTON_ARROW_LEFT,  leftColor, 0 );
 	spFontAddArrowButton( left_font, '^', SP_BUTTON_ARROW_UP,    leftColor, 0 );
 	spFontAddArrowButton( left_font, '>', SP_BUTTON_ARROW_RIGHT, leftColor, 0 );
@@ -80,6 +89,10 @@ void reload_font()
 	spFontAddButton( right_font, 'c', SP_PRACTICE_CANCEL_NAME,  rightColor, 0 ); // d == right button
 	spFontAddButton( right_font, '3', SP_PRACTICE_3_NAME,     rightColor, 0 ); // w == up button
 	spFontAddButton( right_font, '4', SP_PRACTICE_4_NAME,   rightColor, 0 ); // s == down button
+	spFontAddButton( right_font, 'a', SP_BUTTON_LEFT_NAME,   rightColor, 0 ); //a == left button
+	spFontAddButton( right_font, 'w', SP_BUTTON_UP_NAME,  rightColor, 0 ); // d == right button
+	spFontAddButton( right_font, 'd', SP_BUTTON_RIGHT_NAME,     rightColor, 0 ); // w == up button
+	spFontAddButton( right_font, 's', SP_BUTTON_DOWN_NAME,   rightColor, 0 ); // s == down button
 	spFontAddArrowButton( right_font, '<', SP_BUTTON_ARROW_LEFT,  rightColor, 0 );
 	spFontAddArrowButton( right_font, '^', SP_BUTTON_ARROW_UP,    rightColor, 0 );
 	spFontAddArrowButton( right_font, '>', SP_BUTTON_ARROW_RIGHT, rightColor, 0 );
@@ -141,7 +154,7 @@ void draw_stereo(void)
 		spSelectRenderTarget(screen);
 		char buffer[256];
 		sprintf(buffer,"FPS: %i",spGetFPS());
-		spFontDrawRight(screen->w-2,screen->h-2-font->maxheight,0, buffer, font );
+		spFontDraw(2,screen->h-2-font->maxheight,0, buffer, font );
 	#endif
 	spFlip();
 }
@@ -204,6 +217,17 @@ void set_color(int lr,int lg,int lb,int rr,int rg,int rb)
 	reload_font();
 }
 
+void set_alltime(int value)
+{
+	if (value > alltime)
+		alltime = value;
+}
+
+int get_alltime()
+{
+	return alltime;
+}
+
 spConfigPointer stereo_config;
 
 void save_stereo()
@@ -211,15 +235,17 @@ void save_stereo()
 	spConfigSetInt(stereo_config,"brightness",brightness);
 	spConfigSetInt(stereo_config,"stereo_mode",get_glasses());
 	spConfigSetBool(stereo_config,"flipped",flipped);
+	spConfigSetInt(stereo_config,"alltime",alltime);
 	spConfigWrite(stereo_config);
 }
 
 void init_stereo()
 {
-	stereo_config = spConfigRead("stereo.ini","meteoroid3d");
+	stereo_config = spConfigRead("config.ini","meteoroid3d");
 	set_brightness(spConfigGetInt(stereo_config,"brightness",80));
 	set_glasses(spConfigGetInt(stereo_config,"stereo_mode",0));
 	flipped = spConfigGetBool(stereo_config,"flipped",0);
+	set_alltime(spConfigGetInt(stereo_config,"alltime",0));
 	spSetDefaultWindowSize( 800, 480 );
 	screen = spCreateDefaultWindow();
 	set_color(

@@ -25,7 +25,7 @@ SPARROW_LIB = $(SPARROW_FOLDER)
 endif
 LIB += -L$(SPARROW_LIB)
 INCLUDE += -I$(SPARROW_FOLDER)
-DYNAMIC += -lsparrow3d
+DYNAMIC += -lsparrow3d -lsparrowSound -lsparrowNet
 
 CFLAGS += $(FLAGS) $(PARAMETER)
 
@@ -37,6 +37,8 @@ targets:
 
 meteoroid3d: meteoroid3d.c glasses.o stereo.o matrix.o space.o makeBuildDir
 	cp -u $(SPARROW_LIB)/$(SPARROW3D_LIB) $(BUILD)
+	cp -u $(SPARROW_LIB)/$(SPARROWSOUND_LIB) $(BUILD)
+	cp -u $(SPARROW_LIB)/$(SPARROWNET_LIB) $(BUILD)
 	$(CC) $(CFLAGS) meteoroid3d.c glasses.o stereo.o matrix.o space.o $(SDL) $(INCLUDE) $(LIB) $(STATIC) $(DYNAMIC) -o $(BUILD)/meteoroid3d$(SUFFIX)
 
 glasses.o: glasses.c glasses.h

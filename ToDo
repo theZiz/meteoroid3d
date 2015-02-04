@@ -1,28 +1,4 @@
-* Middle is light source
-* Showing the middle somehow
-* Generating meteorids (3 sizes) in the middle
-* Moving meteorids
-* Shooting to meteorids
-* Splitting of meteorids when hit
-* Showing the edges
-* Showing the other site of the edge
-* Meteorid <-> Meteorid Collision handling
-* Meteorid <-> Ship Collision handling
-* Showing map with middle and meteorids before the null paralaxis
-* Showing edges in map
-* HUD:
-	* All time highscore
-	* score
-	* weapon count down
-* At start, what to do:
-	* Don't die
-	* Destroy meteoroids
-	* Collect items
-* items
-	* higher shoot frequenty
-	* more damage
-	* more bullets
-* Particle effect
-	* Collision
-	* Hit
-	* Movement in space
+* background music
+* shoot sample
+* explosion sample
+* C4A implement

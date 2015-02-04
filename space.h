@@ -20,9 +20,9 @@
 
 #include <sparrow3d.h>
 
-#define MAX_SPACE SP_ONE*256
-#define MAX_SPACE_INT 256
-#define ROT_BUFFER 256
+#define MAX_SPACE SP_ONE*8
+#define MAX_SPACE_INT 8
+#define ROT_BUFFER 64
 
 typedef struct sShip *pShip;
 typedef struct sShip
@@ -38,9 +38,14 @@ typedef struct sShip
 
 void update_ship(int steps);
 void handle_ship_input(int steps);
-void init_ship();
 void draw_space(Uint16 color);
 void draw_map(Uint16 color);
 pShip getShip();
+int get_score();
+int get_lives();
+void init_game();
+void finish_game();
+void init_ship();
+void finish_ship();
 
 #endif
