@@ -27,13 +27,21 @@ int first = 1;
 
 void draw(int eye,Uint16 color,spFontPointer font)
 {
-	spSetZSet(1);
-	spSetZTest(1);
 	spIdentity();
 	spResetZBuffer();
 	spClearTarget( 0 );
 
+	spSetAlphaTest(0);	
+	//more HUD
+	draw_map(color);
+	
+	//Space
+	draw_space(color);
+	
 	//HUD
+	spSetAlphaTest(1);
+	spSetZSet(0);
+	spSetZTest(0);
 	int px,py,pz,w;
 	char buffer[512];
 	if (first == 1)
@@ -72,17 +80,8 @@ void draw(int eye,Uint16 color,spFontPointer font)
 			sprintf(buffer,"Lives: Last");
 		else
 			sprintf(buffer,"Lives: %i",get_lives());
-		spFontDrawRight(px,py-font->maxheight/2,pz,buffer,font);	
-		spSetAlphaTest(0);
-		
-		//more HUD
-		draw_map(color);
+		spFontDrawRight(px,py-font->maxheight/2,pz,buffer,font);
 	}
-	
-	//Space
-	draw_space(color);
-	
-	spSetAlphaTest(1);
 }
 
 int last_volume = 0;

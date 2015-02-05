@@ -79,7 +79,7 @@ int power_feedback( spParticleBunchPointer bunch, Sint32 action, Sint32 extra_da
 		{
 			if (bunch->particle[i].status >= 64)
 				continue;
-			spSetAlphaPattern(64-bunch->particle[i].status,*ptr);
+			spSetAlphaPattern(128-bunch->particle[i].status*2,*ptr);
 			Uint16 color = spGetRGB(r-bunch->particle[i].status*r/128,g-bunch->particle[i].status*g/128,b-bunch->particle[i].status*b/128);
 			spEllipse3D(bunch->particle[i].x-ship.x,bunch->particle[i].y-ship.y,bunch->particle[i].z-ship.z,bunch->particle[i].data.reserved[0],bunch->particle[i].data.reserved[0],color);
 		}
@@ -241,7 +241,7 @@ void update_texture(int horizontal,int vertical,int steps)
 				r = SP_ONE/32-SP_ONE/128;
 			for (; i < sum_part; i++)
 			{
-				int rz = rand()%steps;
+				int rz = -rand()%steps;
 				bunch->particle[i].status = rz;
 				rz *= ship.power/16384;
 				bunch->particle[i].data.reserved[0] = r;
@@ -539,7 +539,7 @@ void update_ship(int steps)
 				stone = stone->next;
 			}
 		}
-		if (kill_bullet || bullet->age > 1000)
+		if (kill_bullet || bullet->age > 900)
 		{
 			if (previous)
 				previous->next = bullet->next;
@@ -581,7 +581,24 @@ void draw_space(Uint16 color)
 	spTranslate(0, -SP_ONE/5, 0);
 	spRotateX(SP_PI/16);
 	spMulMatrix(neg_rotation);
-	
+
+	spSetZTest(0);
+	spSetZSet(0);
+	for (x = -MAX_SPACE; x <= MAX_SPACE; x+=SP_ONE)
+		for (y = -MAX_SPACE; y <= MAX_SPACE; y+=SP_ONE)
+			for (z = -MAX_SPACE; z <= MAX_SPACE; z+=SP_ONE)
+			{
+				if ( (abs(x) == MAX_SPACE) && (abs(y) == MAX_SPACE) && (abs(z) == MAX_SPACE))
+					spEllipse3D(x-ship.x,y-ship.y,z-ship.z,SP_ONE/8,SP_ONE/8,dark);
+				else
+				if (spMax(spMax(abs(x),abs(y)),abs(z)) == MAX_SPACE)
+					spEllipse3D(x-ship.x,y-ship.y,z-ship.z,SP_ONE/18,SP_ONE/18,dark);
+			}
+
+
+	spSetZSet(1);
+	spParticleDraw(particle_bunch);
+	spSetZTest(1);
 	spPushModelView();
 	spTranslate(-ship.x, -ship.y, -ship.z);
 	spRotateX(middle_rotation);
@@ -607,7 +624,6 @@ void draw_space(Uint16 color)
 		spPopModelView();
 		stone = stone->next;
 	}
-
 	pBullet bullet = first_bullet;
 	while (bullet)
 	{
@@ -620,18 +636,6 @@ void draw_space(Uint16 color)
 			bullet->z-bullet->dz*16-ship.z,color);
 		bullet = bullet->next;
 	}
-		
-	spParticleDraw(particle_bunch);
-	for (x = -MAX_SPACE; x <= MAX_SPACE; x+=SP_ONE)
-		for (y = -MAX_SPACE; y <= MAX_SPACE; y+=SP_ONE)
-			for (z = -MAX_SPACE; z <= MAX_SPACE; z+=SP_ONE)
-			{
-				if ( (abs(x) == MAX_SPACE) && (abs(y) == MAX_SPACE) && (abs(z) == MAX_SPACE))
-					spEllipse3D(x-ship.x,y-ship.y,z-ship.z,SP_ONE/8,SP_ONE/8,dark);
-				else
-				if (spMax(spMax(abs(x),abs(y)),abs(z)) == MAX_SPACE)
-					spEllipse3D(x-ship.x,y-ship.y,z-ship.z,SP_ONE/18,SP_ONE/18,dark);
-			}
 	spMulMatrix(rotation);
 	spMesh3D( ship.mesh, 0);
 	spPopModelView();
@@ -639,6 +643,8 @@ void draw_space(Uint16 color)
 
 void draw_map(Uint16 color)
 {
+	spSetZTest(0);
+	spSetZSet(0);
 	spPushModelView();
 	spTranslate(spFloatToFixed(-0.55f), spFloatToFixed(-0.25f), spFloatToFixed(-Z0+3.2f));
 	Sint32 rotation[16];
@@ -697,6 +703,8 @@ void draw_map(Uint16 color)
 	}
 
 	spPopModelView();
+	spSetZTest(1);
+	spSetZSet(1);
 }
 
 void init_game()

@@ -33,9 +33,6 @@ do
 				echo "symlink('$PROGRAM-$NAME-$VERSION.tar.gz', '$PROGRAM-$NAME.tar.gz');" >> ../../symlink.php
 			else
 				#no Pandora, no PC. So we have a low resolution device!
-				if [ $NAME != "win32" ]; then
-					cp ../../small_resolution_data/* "$PROGRAM/data"
-				fi
 				if [ $NAME = "gcw" ]; then
 					mksquashfs * "$PROGRAM.opk" -all-root -noappend -no-exports -no-xattrs
 					mv "$PROGRAM.opk" ../..
