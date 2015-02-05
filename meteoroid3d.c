@@ -38,19 +38,26 @@ void draw(int eye,Uint16 color,spFontPointer font)
 	char buffer[512];
 	if (first == 1)
 	{
-		spProjectPoint3D(spFloatToFixed(-0.0f), spFloatToFixed(0.33f), spFloatToFixed(-Z0+3.5f),&px,&py,&pz,&w,1);
+		spProjectPoint3D(spFloatToFixed(-0.0f), spFloatToFixed(0.0f), spFloatToFixed(-Z0+3.5f),&px,&py,&pz,&w,1);
 		sprintf(buffer,"Welcome to Meteroid3D (with C4A support)\n\n*Destroy meteroids for beating the highscore\n*Don't get hit (you have 3 lives)\n\nControls:\n[<][>][v][^] Direction\n[w]Boost   [s]Brake   [a]Shoot\n[l][r]sound volume\n[S]Exit\n\n[o]Let's go!");
-		spFontDrawMiddle(px,py-font->maxheight/2,pz,buffer,font);	
+		spFontDrawMiddle(px,py-font->maxheight*6,pz,buffer,font);	
 	}
 	else
 	if (first == -1)
 	{
-		spProjectPoint3D(spFloatToFixed(-0.0f), spFloatToFixed(0.3f), spFloatToFixed(-Z0+3.5f),&px,&py,&pz,&w,1);
+		spProjectPoint3D(spFloatToFixed(-0.0f), spFloatToFixed(0.0f), spFloatToFixed(-Z0+3.5f),&px,&py,&pz,&w,1);
 		if (get_score() <= get_alltime())
 			sprintf(buffer,"\nYou lost,\nbut your score was\n%i !\n\n[d]Try again beating\nthe highscore\n%i\n\n[S]Exit",get_score(),get_alltime());
 		else
 			sprintf(buffer,"You lost,\nbut your score was\n%i !\n\nFurthermore you beat\nthe highscore:\n%i!\nCongratulations!\n\n[d]Try again\n[S]Exit",get_score(),get_alltime());
-		spFontDrawMiddle(px,py-font->maxheight/2,pz,buffer,font);
+		spFontDrawMiddle(px,py-font->maxheight*6,pz,buffer,font);
+	}
+	else
+	if (first == -2)
+	{
+		spProjectPoint3D(spFloatToFixed(-0.0f), spFloatToFixed(0.0f), spFloatToFixed(-Z0+3.5f),&px,&py,&pz,&w,1);
+		sprintf(buffer,"\n\n\nFinishing...\n\nCommitting C4A results\n\n[d]Cancel");
+		spFontDrawMiddle(px,py-font->maxheight*6,pz,buffer,font);
 	}
 	else
 	{
@@ -83,7 +90,20 @@ int last_volume = 0;
 int calc(Uint32 steps)
 {
 	if (spGetInput()->button[SP_BUTTON_START])
-		return 2;
+	{
+		first = -2;
+		set_alltime(get_score());
+		save_stereo();
+		if (profile)
+		{
+			if (get_score())
+				spNetC4ACommitScore(profile,"meteoroid3d",get_score(),NULL,0);
+			if (spNetC4ACommitScore(profile,"",0,NULL,20000))
+				return 2;
+		}
+		else
+			return 2;
+	}	
 	if (spGetInput()->button[SP_BUTTON_L])
 		set_volume(get_volume()-steps);
 	if (spGetInput()->button[SP_BUTTON_R])
@@ -115,6 +135,14 @@ int calc(Uint32 steps)
 		}
 	}
 	else
+	if (first == -2)
+	{
+		if (spGetInput()->button[SP_BUTTON_RIGHT])
+			return 2;
+		if (spNetC4AGetStatus() != SP_C4A_PROGRESS)
+			return 2;
+	}
+	else
 	{
 		handle_ship_input(steps);
 		update_ship(steps);
@@ -122,7 +150,8 @@ int calc(Uint32 steps)
 		{
 			spGetInput()->button[SP_BUTTON_LEFT] = 0;
 			first = -1;
-			spNetC4ACommitScore(profile,"meteoroid3d",get_score(),NULL,0);
+			if (get_score())
+				spNetC4ACommitScore(profile,"meteoroid3d",get_score(),NULL,0);
 		}
 	}
 	return 0;
@@ -152,14 +181,8 @@ int main(int argc, char **argv)
 		finish_game();
 	}
 	spSoundStopMusic(0);
+	spNetC4AFreeProfile(profile);
 	finish_ship();
-	if (profile)
-	{
-		if (spNetC4ACommitScore(profile,"",0,NULL,10000) == 0)
-			while (spNetC4AGetStatus() == SP_C4A_PROGRESS)
-				spSleep(10000);
-		spNetC4AFreeProfile(profile);
-	}
 	spQuitCore();
 	spQuitNet();
 	spSoundQuit();

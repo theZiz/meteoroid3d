@@ -47,12 +47,15 @@ void set_volume(int v)
 	spSoundSetVolume(volume>>4);
 }
 
+#define FONT_SIZE 18
+#define FONT_CORRECT 4
+
 void reload_font()
 {
 	//Font Loading
 	if ( font )
 		spFontDelete( font );
-	font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
+	font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(FONT_SIZE * spGetSizeFactor())-FONT_CORRECT );
 	spFontAdd( font, SP_FONT_GROUP_ASCII,              rightColor | leftColor); //whole ASCII
 	spFontAddButton( font, 'S', SP_BUTTON_START_NAME,  rightColor | leftColor, 0 ); //Return == START
 	spFontAddButton( font, 'E', SP_BUTTON_SELECT_NAME, rightColor | leftColor, 0 ); //Backspace == SELECT
@@ -78,7 +81,7 @@ void reload_font()
 		spGetBFromColor(leftColor)/2);
 	if ( left_font )
 		spFontDelete( left_font );
-	left_font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
+	left_font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(FONT_SIZE * spGetSizeFactor())-FONT_CORRECT );
 	spFontAdd( left_font, SP_FONT_GROUP_ASCII,              leftColor); //whole ASCII
 	spFontAddButton( left_font, 'S', SP_BUTTON_START_NAME,  leftColor, dark ); //Return == START
 	spFontAddButton( left_font, 'E', SP_BUTTON_SELECT_NAME, leftColor, dark ); //Backspace == SELECT
@@ -103,7 +106,7 @@ void reload_font()
 		spGetGFromColor(rightColor)/2,
 		spGetBFromColor(rightColor)/2);	if ( right_font )
 		spFontDelete( right_font );
-	right_font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(16 * spGetSizeFactor()) );
+	right_font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(FONT_SIZE * spGetSizeFactor())-FONT_CORRECT );
 	spFontAdd( right_font, SP_FONT_GROUP_ASCII,              rightColor); //whole ASCII
 	spFontAddButton( right_font, 'S', SP_BUTTON_START_NAME,  rightColor, dark ); //Return == START
 	spFontAddButton( right_font, 'E', SP_BUTTON_SELECT_NAME, rightColor, dark ); //Backspace == SELECT
@@ -273,6 +276,7 @@ void init_stereo()
 	flipped = spConfigGetBool(stereo_config,"flipped",0);
 	set_alltime(spConfigGetInt(stereo_config,"alltime",0));
 	set_volume(spConfigGetInt(stereo_config,"volume",64));
+	//spSetDefaultWindowSize( 320, 240 );
 	spSetDefaultWindowSize( 800, 480 );
 	screen = spCreateDefaultWindow();
 	set_color(
