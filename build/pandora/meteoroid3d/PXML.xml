@@ -1,0 +1,61 @@
+<!-- This is a sample PXML.xml file making use of many different things.-->
+<PXML xmlns="http://openpandora.org/namespaces/PXML">
+<package id="meteoroid3d">
+<version major="1" minor="0" release="0" build="0"/>
+<author name="Ziz" website="http://ziz.openhandhelds.org"/>
+<titles>
+<title lang="en_US">
+Meteoroid3D
+</title>
+</titles>
+<descriptions>
+<description lang="en_US">
+The first REAL 3D game for the Pandora
+</description>
+</descriptions>
+<icon src="./meteoroid3d.png"/>
+</package>
+<application id="meteoroid3d" appdata="meteoroid3d">
+<exec command="./meteoroid3d.sh"/>
+<version major="1" minor="0" release="0" build="0" type="release"/>
+<!--This program's version-->
+<osversion major="1" minor="0" release="0" build="0"/>
+<!--The minimum OS version required-->
+<author name="Ziz" website="http://ziz.openhandhelds.org"/>
+<!--Optional email and website, name required-->
+<titles>
+<title lang="en_US">
+Meteoroid3D
+</title>
+</titles>
+<title lang="en_US">
+Meteoroid3D
+</title>
+<!--Extra <title> block for compatibility with OS versions before HF6-->
+<descriptions>
+<description lang="en_US">
+The first REAL 3D game for the Pandora
+</description>
+</descriptions>
+<description lang="en_US">
+The first REAL 3D game for the Pandora
+</description>
+<!--Extra <description> block for compatibility with OS versions before HF6-->
+<icon src="./meteoroid3d.png"/>
+<licenses>
+<license name="GPLv2+" url="http://www.gnu.org/licenses/gpl-2.0.html" sourcecodeurl="https://github.com/theZiz/meteoroid3d"/>
+<!--Optional url and sourcecodeurl, mandatory name-->
+</licenses>
+<previewpics>
+<pic src="previews/meteoroid3d_1.png"/>
+<pic src="previews/meteoroid3d_2.png"/>
+<pic src="previews/meteoroid3d_3.png"/>
+</previewpics>
+<!--the categories has to conform to the FDO categories, those will be enforced by the schema and libpnd!-->
+<categories>
+<category name="Game">
+<subcategory name="ActionGame"/>
+</category>
+</categories>
+</application>
+</PXML>

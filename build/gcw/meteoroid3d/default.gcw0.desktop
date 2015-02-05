@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Meteoroid3d
+Comment=The first REAL 3D game for the GCW
+Exec=meteoroid3d.sh
+Terminal=false
+Type=Application
+StartupNotify=true
+Icon=meteoroid3d
+Categories=games;
