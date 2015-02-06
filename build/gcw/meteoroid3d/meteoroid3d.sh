@@ -1,3 +1,3 @@
 #!/bin/sh
-cd hase
+cd meteoroid3d
 LD_LIBRARY_PATH=. ./meteoroid3d
