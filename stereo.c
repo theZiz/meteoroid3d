@@ -30,10 +30,21 @@ Uint16 rightColor;
 int crossedEyes = 0;
 int alltime = 0;
 int volume = 1024;
+int flip_direction = 0;
 
 int get_volume()
 {
 	return volume;
+}
+
+int get_flip_direction()
+{
+	return flip_direction;
+}
+
+void set_flip_direction(int v)
+{
+	flip_direction = (v != 0);
 }
 
 void set_volume(int v)
@@ -265,6 +276,7 @@ void save_stereo()
 	spConfigSetBool(stereo_config,"flipped",flipped);
 	spConfigSetInt(stereo_config,"alltime",alltime);
 	spConfigSetInt(stereo_config,"volume",volume);
+	spConfigSetBool(stereo_config,"flip_control",flip_direction);
 	spConfigWrite(stereo_config);
 }
 
@@ -276,6 +288,7 @@ void init_stereo()
 	flipped = spConfigGetBool(stereo_config,"flipped",0);
 	set_alltime(spConfigGetInt(stereo_config,"alltime",0));
 	set_volume(spConfigGetInt(stereo_config,"volume",64));
+	flip_direction = spConfigGetBool(stereo_config,"flip_control",0);
 	//spSetDefaultWindowSize( 320, 240 );
 	spSetDefaultWindowSize( 800, 480 );
 	screen = spCreateDefaultWindow();

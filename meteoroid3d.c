@@ -47,7 +47,10 @@ void draw(int eye,Uint16 color,spFontPointer font)
 	if (first == 1)
 	{
 		spProjectPoint3D(spFloatToFixed(-0.0f), spFloatToFixed(0.0f), spFloatToFixed(-Z0+3.5f),&px,&py,&pz,&w,1);
-		sprintf(buffer,"Welcome to Meteroid3D (with C4A support)\n\n*Destroy meteroids for beating the highscore\n*Don't get hit (you have 3 lives)\n\nControls:\n[<][>][v][^] Direction\n[w]Boost   [s]Brake   [a]Shoot\n[l][r]sound volume\n[S]Exit\n\n[o]Let's go!");
+		if (get_flip_direction())
+			sprintf(buffer,"Welcome to Meteroid3D (with C4A support)\n\n*Destroy meteroids for beating the highscore\n*Don't get hit (you have 3 lives)\n\nControls:\n"SP_PAD_NAME" Direction ([v] is down, change with [c])\n[w]Boost   [s]Brake   [a]Shoot\n[l][r]sound volume\n[S]Exit\n\n[o]Let's go!");
+		else
+			sprintf(buffer,"Welcome to Meteroid3D (with C4A support)\n\n*Destroy meteroids for beating the highscore\n*Don't get hit (you have 3 lives)\n\nControls:\n"SP_PAD_NAME" Direction ([^] is down, change with [c])\n[w]Boost   [s]Brake   [a]Shoot\n[l][r]sound volume\n[S]Exit\n\n[o]Let's go!");
 		spFontDrawMiddle(px,py-font->maxheight*6,pz,buffer,font);	
 	}
 	else
@@ -65,6 +68,13 @@ void draw(int eye,Uint16 color,spFontPointer font)
 	{
 		spProjectPoint3D(spFloatToFixed(-0.0f), spFloatToFixed(0.0f), spFloatToFixed(-Z0+3.5f),&px,&py,&pz,&w,1);
 		sprintf(buffer,"\n\n\nFinishing...\n\nCommitting C4A results\n\n[d]Cancel");
+		spFontDrawMiddle(px,py-font->maxheight*6,pz,buffer,font);
+	}
+	else
+	if (first == -3)
+	{
+		spProjectPoint3D(spFloatToFixed(-0.0f), spFloatToFixed(0.0f), spFloatToFixed(-Z0+3.5f),&px,&py,&pz,&w,1);
+		sprintf(buffer,"\n\n\nPaused\n\n[S] continue\n\n[c]Exit");
 		spFontDrawMiddle(px,py-font->maxheight*6,pz,buffer,font);
 	}
 	else
@@ -88,21 +98,7 @@ int last_volume = 0;
 
 int calc(Uint32 steps)
 {
-	if (spGetInput()->button[SP_BUTTON_START])
-	{
-		first = -2;
-		set_alltime(get_score());
-		save_stereo();
-		if (profile)
-		{
-			if (get_score())
-				spNetC4ACommitScore(profile,"meteoroid3d",get_score(),NULL,0);
-			if (spNetC4ACommitScore(profile,"",0,NULL,20000))
-				return 2;
-		}
-		else
-			return 2;
-	}	
+	
 	if (spGetInput()->button[SP_BUTTON_L])
 		set_volume(get_volume()-steps);
 	if (spGetInput()->button[SP_BUTTON_R])
@@ -113,16 +109,52 @@ int calc(Uint32 steps)
 		last_volume = get_volume();
 		save_stereo();
 	}
-	if (first == 1)
+	if (first == -3) //Pause
+	{
+		if (spGetInput()->button[SP_PRACTICE_CANCEL])
+		{
+			spGetInput()->button[SP_PRACTICE_CANCEL] = 0;
+			first = -2;
+			set_alltime(get_score());
+			save_stereo();
+			if (profile)
+			{
+				if (get_score())
+					spNetC4ACommitScore(profile,"meteoroid3d",get_score(),NULL,0);
+				if (spNetC4ACommitScore(profile,"",0,NULL,20000))
+					return 2;
+			}
+			else
+				return 2;
+		}
+		if (spGetInput()->button[SP_BUTTON_START])
+		{
+			spGetInput()->button[SP_BUTTON_START] = 0;
+			first = 0;
+		}		
+	}
+	else
+	if (first == 1) //Introducing screen
 	{
 		if (spGetInput()->button[SP_PRACTICE_OK])
 		{
 			spGetInput()->button[SP_PRACTICE_OK] = 0;
 			first = 0;
 		}
+		if (spGetInput()->button[SP_PRACTICE_CANCEL])
+		{
+			spGetInput()->button[SP_PRACTICE_CANCEL] = 0;
+			set_flip_direction(1-get_flip_direction());
+			save_stereo();
+		}
+		if (spGetInput()->button[SP_BUTTON_START])
+		{
+			spGetInput()->button[SP_BUTTON_START] = 0;
+			first = -3;
+		}
 	}
 	else
-	if (first == -1)
+	if (first == -1) //Finish
 	{
 		if (spGetInput()->button[SP_BUTTON_RIGHT])
 		{
@@ -132,12 +164,17 @@ int calc(Uint32 steps)
 			save_stereo();
 			return 1;
 		}
+		if (spGetInput()->button[SP_BUTTON_START])
+		{
+			spGetInput()->button[SP_BUTTON_START] = 0;
+			first = -2;
+		}
 	}
 	else
-	if (first == -2)
+	if (first == -2) //C4A commit
 	{
 		if (spGetInput()->button[SP_BUTTON_RIGHT])
-			return 2;
+			spNetC4ACancelTask();
 		if (spNetC4AGetStatus() != SP_C4A_PROGRESS)
 			return 2;
 	}
@@ -151,6 +188,11 @@ int calc(Uint32 steps)
 			first = -1;
 			if (get_score())
 				spNetC4ACommitScore(profile,"meteoroid3d",get_score(),NULL,0);
+		}
+		if (spGetInput()->button[SP_BUTTON_START])
+		{
+			spGetInput()->button[SP_BUTTON_START] = 0;
+			first = -3;
 		}
 	}
 	return 0;

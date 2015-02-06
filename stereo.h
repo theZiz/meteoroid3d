@@ -36,4 +36,6 @@ void set_alltime(int value);
 int get_alltime();
 int get_volume();
 void set_volume(int v);
+int get_flip_direction();
+void set_flip_direction(int v);
 #endif

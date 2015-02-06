@@ -332,7 +332,10 @@ void handle_ship_input(int steps)
 		else
 		if (spGetInput()->axis[1])
 		{
-			rotateX(ship.rotation,spFixedToFloat(rotation_acceleration/2*spGetInput()->axis[1]));
+			if (get_flip_direction())
+				rotateX(ship.rotation,spFixedToFloat(-rotation_acceleration/2*spGetInput()->axis[1]));
+			else
+				rotateX(ship.rotation,spFixedToFloat(rotation_acceleration/2*spGetInput()->axis[1]));
 			if (rotation_acceleration < 256)
 				rotation_acceleration++;
 		}
@@ -439,119 +442,131 @@ void update_ship(int steps)
 		ship.z -= 2*MAX_SPACE;
 		
 	//Stones
-	stone_bucket += steps;
-	while (stone_bucket > BUCKET)
+	int rest_steps = steps;
+	while (rest_steps > 0)
 	{
-		stone_bucket -= BUCKET;
-		add_stone(0,0,0,rand()%3);
-	}
-	pStone stone = first_stone;
-	pStone before = NULL;
-	while (stone)
-	{
-		stone->x += stone->dx * steps;
-		stone->y += stone->dy * steps;
-		stone->z += stone->dz * steps;
-		stone->rot_x += stone->dx * steps;
-		stone->rot_y += stone->dy * steps;
-		while (stone->x < -MAX_SPACE)
-			stone->x += 2*MAX_SPACE;
-		while (stone->x >= MAX_SPACE)
-			stone->x -= 2*MAX_SPACE;
-		while (stone->y < -MAX_SPACE)
-			stone->y += 2*MAX_SPACE;
-		while (stone->y >= MAX_SPACE)
-			stone->y -= 2*MAX_SPACE;
-		while (stone->z < -MAX_SPACE)
-			stone->z += 2*MAX_SPACE;
-		while (stone->z >= MAX_SPACE)
-			stone->z -= 2*MAX_SPACE;
-		
-		Sint32 dx = stone->x-ship.x;
-		Sint32 dy = stone->y-ship.y;
-		Sint32 dz = stone->z-ship.z;
-		Sint32 r = SP_ONE >> stone->size+1;
-		pStone next = stone->next;
-		if (shake == 0 && spMul(dx,dx)+spMul(dy,dy)+spMul(dz,dz) < spMul(r+spFloatToFixed(0.15f),r+spFloatToFixed(0.15f)))
+		int one = 10;
+		rest_steps-=10;
+		if (rest_steps < 0)
 		{
-			printf("Wums of %i at you!\n",stone->size);
-			wums(stone->x,stone->y,stone->z,1 << 8-stone->size,r);
-			delete_stone(stone,before);
-			lives--;
-			shake = 500;
+			one += rest_steps;
+			rest_steps = 0;
 		}
-		else
-			before = stone;
-		stone = next;
-	}
 	
-	pBullet bullet = first_bullet;
-	pBullet previous = NULL;
-	while (bullet)
-	{
-		bullet->age += steps;
-				
-		bullet->x += bullet->dx * steps;
-		bullet->y += bullet->dy * steps;
-		bullet->z += bullet->dz * steps;
-
-		while (bullet->x < -MAX_SPACE)
-			bullet->x += 2*MAX_SPACE;
-		while (bullet->x >= MAX_SPACE)
-			bullet->x -= 2*MAX_SPACE;
-		while (bullet->y < -MAX_SPACE)
-			bullet->y += 2*MAX_SPACE;
-		while (bullet->y >= MAX_SPACE)
-			bullet->y -= 2*MAX_SPACE;
-		while (bullet->z < -MAX_SPACE)
-			bullet->z += 2*MAX_SPACE;
-		while (bullet->z >= MAX_SPACE)
-			bullet->z -= 2*MAX_SPACE;
+		stone_bucket += one;
+		while (stone_bucket > BUCKET)
+		{
+			stone_bucket -= BUCKET;
+			add_stone(0,0,0,rand()%3);
+		}
+		pStone stone = first_stone;
+		pStone before = NULL;
+		while (stone)
+		{
+			stone->x += stone->dx * one;
+			stone->y += stone->dy * one;
+			stone->z += stone->dz * one;
+			stone->rot_x += stone->dx * one;
+			stone->rot_y += stone->dy * one;
+			while (stone->x < -MAX_SPACE)
+				stone->x += 2*MAX_SPACE;
+			while (stone->x >= MAX_SPACE)
+				stone->x -= 2*MAX_SPACE;
+			while (stone->y < -MAX_SPACE)
+				stone->y += 2*MAX_SPACE;
+			while (stone->y >= MAX_SPACE)
+				stone->y -= 2*MAX_SPACE;
+			while (stone->z < -MAX_SPACE)
+				stone->z += 2*MAX_SPACE;
+			while (stone->z >= MAX_SPACE)
+				stone->z -= 2*MAX_SPACE;
 			
-		int kill_bullet = 0;
-		
-		stone = first_stone;
-		before = NULL;
-		
-		if (spMul(bullet->x,bullet->x)+spMul(bullet->y,bullet->y)+spMul(bullet->z,bullet->z) < spMul(spFloatToFixed(0.3f),spFloatToFixed(0.3f)))
-		{
-			kill_bullet = 1;
-			wums(bullet->x,bullet->y,bullet->z,16,0);
-		}
-		else
-		{
-			while (stone)
-			{	
-				Sint32 dx = stone->x-bullet->x;
-				Sint32 dy = stone->y-bullet->y;
-				Sint32 dz = stone->z-bullet->z;
-				Sint32 r = SP_ONE >> stone->size+1;
-				if (spMul(dx,dx)+spMul(dy,dy)+spMul(dz,dz) < spMul(r,r))
-				{
-					//Wums
-					printf("Wums of %i\n",stone->size);
-					wums(stone->x,stone->y,stone->z,1 << 8-stone->size,r);
-					delete_stone(stone,before);
-					kill_bullet = 1;
-					break;
-				}
-				before = stone;
-				stone = stone->next;
+			Sint32 dx = stone->x-ship.x;
+			Sint32 dy = stone->y-ship.y;
+			Sint32 dz = stone->z-ship.z;
+			Sint32 r = SP_ONE >> stone->size+1;
+			pStone next = stone->next;
+			if (shake == 0 && spMul(dx,dx)+spMul(dy,dy)+spMul(dz,dz) < spMul(r+spFloatToFixed(0.15f),r+spFloatToFixed(0.15f)))
+			{
+				printf("Wums of %i at you!\n",stone->size);
+				wums(stone->x,stone->y,stone->z,1 << 8-stone->size,r);
+				delete_stone(stone,before);
+				lives--;
+				shake = 500;
 			}
-		}
-		if (kill_bullet || bullet->age > 900)
-		{
-			if (previous)
-				previous->next = bullet->next;
 			else
-				first_bullet = bullet->next;
-			pBullet next = bullet->next;
-			free(bullet);
-			bullet = next;
-			continue;
+				before = stone;
+			stone = next;
 		}
-		previous = bullet;	
-		bullet = bullet->next;
+		
+		pBullet bullet = first_bullet;
+		pBullet previous = NULL;
+		while (bullet)
+		{
+			bullet->age += one;
+					
+			bullet->x += bullet->dx * one;
+			bullet->y += bullet->dy * one;
+			bullet->z += bullet->dz * one;
+
+			while (bullet->x < -MAX_SPACE)
+				bullet->x += 2*MAX_SPACE;
+			while (bullet->x >= MAX_SPACE)
+				bullet->x -= 2*MAX_SPACE;
+			while (bullet->y < -MAX_SPACE)
+				bullet->y += 2*MAX_SPACE;
+			while (bullet->y >= MAX_SPACE)
+				bullet->y -= 2*MAX_SPACE;
+			while (bullet->z < -MAX_SPACE)
+				bullet->z += 2*MAX_SPACE;
+			while (bullet->z >= MAX_SPACE)
+				bullet->z -= 2*MAX_SPACE;
+				
+			int kill_bullet = 0;
+			
+			stone = first_stone;
+			before = NULL;
+			
+			if (spMul(bullet->x,bullet->x)+spMul(bullet->y,bullet->y)+spMul(bullet->z,bullet->z) < spMul(spFloatToFixed(0.3f),spFloatToFixed(0.3f)))
+			{
+				kill_bullet = 1;
+				wums(bullet->x,bullet->y,bullet->z,16,0);
+			}
+			else
+			{
+				while (stone)
+				{	
+					Sint32 dx = stone->x-bullet->x;
+					Sint32 dy = stone->y-bullet->y;
+					Sint32 dz = stone->z-bullet->z;
+					Sint32 r = SP_ONE >> stone->size+1;
+					if (spMul(dx,dx)+spMul(dy,dy)+spMul(dz,dz) < spMul(r,r))
+					{
+						//Wums
+						printf("Wums of %i\n",stone->size);
+						wums(stone->x,stone->y,stone->z,1 << 8-stone->size,r);
+						delete_stone(stone,before);
+						kill_bullet = 1;
+						break;
+					}
+					before = stone;
+					stone = stone->next;
+				}
+			}
+			if (kill_bullet || bullet->age > 900)
+			{
+				if (previous)
+					previous->next = bullet->next;
+				else
+					first_bullet = bullet->next;
+				pBullet next = bullet->next;
+				free(bullet);
+				bullet = next;
+				continue;
+			}
+			previous = bullet;	
+			bullet = bullet->next;
+		}
 	}
 }
 
