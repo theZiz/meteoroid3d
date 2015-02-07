@@ -23,13 +23,13 @@ spFontPointer right_font = NULL;
 Sint32 left_projection[16];
 Sint32 middle_projection[16];
 Sint32 right_projection[16];
-SDL_Surface* right_screen;
+SDL_Surface* right_screen = NULL;
 SDL_Surface* screen = NULL;
 Uint16 leftColor;
 Uint16 rightColor;
 int crossedEyes = 0;
 int alltime = 0;
-int volume = 1024;
+int volume = 1536;
 int flip_direction = 0;
 
 int get_volume()

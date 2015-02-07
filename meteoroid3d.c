@@ -168,6 +168,17 @@ int calc(Uint32 steps)
 		{
 			spGetInput()->button[SP_BUTTON_START] = 0;
 			first = -2;
+			set_alltime(get_score());
+			save_stereo();
+			if (profile)
+			{
+				if (get_score())
+					spNetC4ACommitScore(profile,"meteoroid3d",get_score(),NULL,0);
+				if (spNetC4ACommitScore(profile,"",0,NULL,20000))
+					return 2;
+			}
+			else
+				return 2;
 		}
 	}
 	else

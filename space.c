@@ -629,6 +629,10 @@ void draw_space(Uint16 color)
 		stone_mesh[x]->color = color;
 		
 	pStone stone = first_stone;
+	int hit = 1;
+	Sint32 bx = spFloatToFixed(ship.rotation[ 8]);
+	Sint32 by = spFloatToFixed(ship.rotation[ 9]);
+	Sint32 bz = spFloatToFixed(ship.rotation[10]);
 	while (stone)
 	{
 		spPushModelView();
@@ -637,6 +641,20 @@ void draw_space(Uint16 color)
 		spRotateY( stone->rot_y );
 		spMesh3D(stone_mesh[stone->size*STONE_COUNT+stone->mesh],0);
 		spPopModelView();
+		//Would I hit?
+		if (hit == 1)
+		{
+			Sint32 cx = stone->x-ship.x;
+			Sint32 cy = stone->y-ship.y;
+			Sint32 cz = stone->z-ship.z;
+			Sint32 g = spMul(cx,bx) + spMul(cy,by) + spMul(cz,bz);
+			Sint32 dx = -cx + spMul(bx,g);
+			Sint32 dy = -cy + spMul(by,g);
+			Sint32 dz = -cz + spMul(bz,g);
+			Sint32 d2 = spSquare(dx) + spSquare(dy) + spSquare(dz);
+			if (g < 0 && d2 < (SP_ONE >> stone->size*2+2))
+				hit = 3;
+		}
 		stone = stone->next;
 	}
 	pBullet bullet = first_bullet;
@@ -652,6 +670,14 @@ void draw_space(Uint16 color)
 		bullet = bullet->next;
 	}
 	spMulMatrix(rotation);
+	int px,py,pz,w;
+	spProjectPoint3D(0,0,-SP_ONE*12,&px,&py,&pz,&w,1);
+	w = spFixedToInt(spGetSizeFactor()*10);
+	spLine(px-w/2,py,pz,px-w,py,pz,color);
+	spLine(px+w/2,py,pz,px+w,py,pz,color);
+	spLine(px,py-w/2,pz,px,py-w,pz,color);
+	spLine(px,py+w/2,pz,px,py+w,pz,color);
+	spEllipseBorder(px,py,pz,16,16,hit,hit,color);
 	spMesh3D( ship.mesh, 0);
 	spPopModelView();
 }
