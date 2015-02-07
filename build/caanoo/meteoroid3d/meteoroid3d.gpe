@@ -1,0 +1,6 @@
+#!/bin/sh
+cd `dirname $0`
+
+LD_LIBRARY_PATH=. ./meteoroid3d 2>&1 >meteoroid3d.log
+
+cd /usr/gp2x; ./gp2xmenu
