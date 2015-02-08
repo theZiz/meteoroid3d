@@ -323,13 +323,14 @@ void handle_ship_input(int steps)
 	}
 	for (i = 0; i < steps; i++)
 	{
+		int input = 0;
 		if (spGetInput()->axis[0])
 		{
 			rotateY(ship.rotation,spFixedToFloat(rotation_acceleration/2*-spGetInput()->axis[0]));
 			if (rotation_acceleration < 256)
 				rotation_acceleration++;
+			input = 1;
 		}
-		else
 		if (spGetInput()->axis[1])
 		{
 			if (get_flip_direction())
@@ -338,8 +339,9 @@ void handle_ship_input(int steps)
 				rotateX(ship.rotation,spFixedToFloat(rotation_acceleration/2*spGetInput()->axis[1]));
 			if (rotation_acceleration < 256)
 				rotation_acceleration++;
+			input = 1;
 		}
-		else
+		if (input == 0)
 			rotation_acceleration = 0;
 		for (j = 0; j < ROT_BUFFER-1; j++)
 			memcpy(rotation_buffer[j],rotation_buffer[j+1],sizeof(float)*16);
@@ -677,7 +679,7 @@ void draw_space(Uint16 color)
 	spLine(px+w/2,py,pz,px+w,py,pz,color);
 	spLine(px,py-w/2,pz,px,py-w,pz,color);
 	spLine(px,py+w/2,pz,px,py+w,pz,color);
-	spEllipseBorder(px,py,pz,16,16,hit,hit,color);
+	spEllipseBorder(px,py,pz,w*8/10,w*8/10,hit,hit,color);
 	spMesh3D( ship.mesh, 0);
 	spPopModelView();
 }

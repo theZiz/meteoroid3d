@@ -115,7 +115,8 @@ void reload_font()
 	dark = spGetRGB(
 		spGetRFromColor(rightColor)/2,
 		spGetGFromColor(rightColor)/2,
-		spGetBFromColor(rightColor)/2);	if ( right_font )
+		spGetBFromColor(rightColor)/2);
+	if ( right_font )
 		spFontDelete( right_font );
 	right_font = spFontLoad( "./data/Play-Bold.ttf", spFixedToInt(FONT_SIZE * spGetSizeFactor())-FONT_CORRECT );
 	spFontAdd( right_font, SP_FONT_GROUP_ASCII,              rightColor); //whole ASCII
@@ -289,8 +290,8 @@ void init_stereo()
 	set_alltime(spConfigGetInt(stereo_config,"alltime",0));
 	set_volume(spConfigGetInt(stereo_config,"volume",64));
 	flip_direction = spConfigGetBool(stereo_config,"flip_control",0);
-	//spSetDefaultWindowSize( 320, 240 );
-	spSetDefaultWindowSize( 800, 480 );
+	spSetDefaultWindowSize( 320, 240 );
+	//spSetDefaultWindowSize( 800, 480 );
 	screen = spCreateDefaultWindow();
 	set_color(
 		get_color_value(0,0),
