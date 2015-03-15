@@ -324,9 +324,9 @@ void handle_ship_input(int steps)
 	for (i = 0; i < steps; i++)
 	{
 		int input = 0;
-		if (spGetInput()->axis[0])
+		if (spGetInput()->analog_axis[0])
 		{
-			rotateY(ship.rotation,spFixedToFloat(rotation_acceleration/2*-spGetInput()->axis[0]));
+			rotateY(ship.rotation,spFixedToFloat(spMul(rotation_acceleration,-spGetInput()->analog_axis[0])));
 			if (rotation_acceleration < 256)
 				rotation_acceleration++;
 			input = 1;
@@ -334,9 +334,9 @@ void handle_ship_input(int steps)
 		if (spGetInput()->axis[1])
 		{
 			if (get_flip_direction())
-				rotateX(ship.rotation,spFixedToFloat(-rotation_acceleration/2*spGetInput()->axis[1]));
+				rotateX(ship.rotation,spFixedToFloat(spMul(rotation_acceleration,-spGetInput()->analog_axis[1])));
 			else
-				rotateX(ship.rotation,spFixedToFloat(rotation_acceleration/2*spGetInput()->axis[1]));
+				rotateX(ship.rotation,spFixedToFloat(spMul(rotation_acceleration, spGetInput()->analog_axis[1])));
 			if (rotation_acceleration < 256)
 				rotation_acceleration++;
 			input = 1;

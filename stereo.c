@@ -29,7 +29,7 @@ Uint16 leftColor;
 Uint16 rightColor;
 int crossedEyes = 0;
 int alltime = 0;
-int volume = 1536;
+int volume = 2048;
 int flip_direction = 0;
 
 int get_volume()
@@ -58,8 +58,14 @@ void set_volume(int v)
 	spSoundSetVolume(volume>>4);
 }
 
-#define FONT_SIZE 18
-#define FONT_CORRECT 4
+#if defined(DESKTOP) || defined(PANDORA)
+	#define FONT_SIZE 18
+	#define FONT_CORRECT 4
+#else
+	#define FONT_SIZE 16
+	#define FONT_CORRECT 0
+#endif
+
 
 void reload_font()
 {
@@ -288,10 +294,8 @@ void init_stereo()
 	set_glasses(spConfigGetInt(stereo_config,"stereo_mode",0));
 	flipped = spConfigGetBool(stereo_config,"flipped",0);
 	set_alltime(spConfigGetInt(stereo_config,"alltime",0));
-	set_volume(spConfigGetInt(stereo_config,"volume",64));
+	set_volume(spConfigGetInt(stereo_config,"volume",2048));
 	flip_direction = spConfigGetBool(stereo_config,"flip_control",0);
-	spSetDefaultWindowSize( 320, 240 );
-	//spSetDefaultWindowSize( 800, 480 );
 	screen = spCreateDefaultWindow();
 	set_color(
 		get_color_value(0,0),

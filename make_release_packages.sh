@@ -1,6 +1,6 @@
 #!/bin/sh
 PROGRAM="meteoroid3d"
-VERSION="1.0.1.1"
+VERSION="1.0.1.2"
 DEST=./build/*
 echo "<html>" > index.htm
 echo "<head>" >> index.htm
@@ -33,6 +33,7 @@ do
 				echo "symlink('$PROGRAM-$NAME-$VERSION.tar.gz', '$PROGRAM-$NAME.tar.gz');" >> ../../symlink.php
 			else
 				#no Pandora, no PC. So we have a low resolution device!
+				cp "../../Play-Bold.ttf" "$PROGRAM/data"
 				if [ $NAME = "gcw" ]; then
 					mksquashfs * "$PROGRAM.opk" -all-root -noappend -no-exports -no-xattrs
 					mv "$PROGRAM.opk" ../..

@@ -211,6 +211,8 @@ int calc(Uint32 steps)
 
 int main(int argc, char **argv)
 {
+	spSetDefaultWindowSize( 320, 240 );
+	//spSetDefaultWindowSize( 800, 480 );
 	spInitCore();
 	spInitNet();
 	spSoundInit();

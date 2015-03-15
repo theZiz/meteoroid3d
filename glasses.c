@@ -59,6 +59,12 @@ int get_color_value(int eye,int c_pos)
 	return glasses_color[choosen_glasses][eye][c_pos];
 }
 
+#if defined(DESKTOP) || defined(PANDORA)
+	#define FONT_EXTRA ""
+#else
+	#define FONT_EXTRA "\nFont: Pixel Mania by HiBan (CC-BY-SA)"
+#endif
+
 void draw_glasses(int eye,Uint16 color,spFontPointer font)
 {
 	spIdentity();
@@ -85,11 +91,11 @@ void draw_glasses(int eye,Uint16 color,spFontPointer font)
 	spRotateY(-spSin(g_rot)/2);
 	spTranslate(0,-SP_ONE/3,0);
 	spProjectPoint3D(0,0,0,&px,&py,&pz,&w,1);
-	char buffer[64];
+	char buffer[128];
 	if (get_flipped())
-		sprintf(buffer,"Brightness: %i%% ([v][^])\n[3]Flip (Flipped)\n[o]Okay, let's play!",get_brightness());
+		sprintf(buffer,"Brightness: %i%% ([v][^])\n[3]Flip (Flipped)\n[o]Okay, let's play!"FONT_EXTRA,get_brightness());
 	else
-		sprintf(buffer,"Brightness: %i%% ([v][^])\n[3]Flip (Normal)\n[o]Okay, let's play!",get_brightness());
+		sprintf(buffer,"Brightness: %i%% ([v][^])\n[3]Flip (Normal)\n[o]Okay, let's play!"FONT_EXTRA,get_brightness());
 	spFontDrawMiddle(px,py,pz,buffer,font);
 	
 }
