@@ -23,5 +23,6 @@
 void mulSparrowMatrix(float* matrix);
 void rotateX( float* dest, float rad );
 void rotateY( float* dest, float rad );
+void rotateZ( float* dest, float rad );
 
 #endif

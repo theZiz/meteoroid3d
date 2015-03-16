@@ -324,6 +324,20 @@ void handle_ship_input(int steps)
 	for (i = 0; i < steps; i++)
 	{
 		int input = 0;
+		if (spGetInput()->button[SP_BUTTON_L])
+		{
+			rotateZ(ship.rotation,spFixedToFloat(rotation_acceleration));
+			if (rotation_acceleration < 256)
+				rotation_acceleration++;
+			input = 1;
+		}
+		if (spGetInput()->button[SP_BUTTON_R])
+		{
+			rotateZ(ship.rotation,-spFixedToFloat(rotation_acceleration));
+			if (rotation_acceleration < 256)
+				rotation_acceleration++;
+			input = 1;
+		}
 		if (spGetInput()->analog_axis[0])
 		{
 			rotateY(ship.rotation,spFixedToFloat(spMul(rotation_acceleration,-spGetInput()->analog_axis[0])));

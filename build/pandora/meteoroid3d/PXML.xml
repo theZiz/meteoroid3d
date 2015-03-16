@@ -1,7 +1,7 @@
 <!-- This is a sample PXML.xml file making use of many different things.-->
 <PXML xmlns="http://openpandora.org/namespaces/PXML">
 <package id="meteoroid3d">
-<version major="1" minor="0" release="1" build="2"/>
+<version major="1" minor="0" release="2" build="0"/>
 <author name="Ziz" website="http://ziz.openhandhelds.org"/>
 <titles>
 <title lang="en_US">
@@ -17,7 +17,7 @@ The first REAL 3D game for the Pandora
 </package>
 <application id="meteoroid3d" appdata="meteoroid3d">
 <exec command="./meteoroid3d.sh"/>
-<version major="1" minor="0" release="1" build="2" type="release"/>
+<version major="1" minor="0" release="2" build="0" type="release"/>
 <!--This program's version-->
 <osversion major="1" minor="0" release="0" build="0"/>
 <!--The minimum OS version required-->
@@ -35,10 +35,14 @@ Meteoroid3D
 <descriptions>
 <description lang="en_US">
 The first REAL 3D game for the Pandora
+Version 1.0.2:
+- added barrel roll
 </description>
 </descriptions>
 <description lang="en_US">
 The first REAL 3D game for the Pandora
+Version 1.0.2:
+- added barrel roll
 </description>
 <!--Extra <description> block for compatibility with OS versions before HF6-->
 <icon src="./meteoroid3d.png"/>

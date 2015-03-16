@@ -108,3 +108,42 @@ void rotateY( float* dest, float rad )
 	memcpy( dest, result, sizeof( float ) * 4 );
 	memcpy( &( dest[8] ), result_8, sizeof( float ) * 4 );
 }
+
+
+void rotateZ( float* dest, float rad )
+{
+	//Rotation matrix:
+	float s = sin( rad );
+	float c = cos( rad );
+
+	float rotate[16];
+	rotate[ 0] = c;
+	rotate[ 4] = -s;
+	rotate[ 8] = 0;
+	rotate[12] = 0;
+	rotate[ 1] = s;
+	rotate[ 5] = c;
+	rotate[ 9] = 0;
+	rotate[13] = 0;
+	rotate[ 2] = 0;
+	rotate[ 6] = 0;
+	rotate[10] = 1.0f;
+	rotate[14] = 0;
+	rotate[ 3] = 0;
+	rotate[ 7] = 0;
+	rotate[11] = 0;
+	rotate[15] = 1.0f;
+
+	float result[8];
+	result[ 0] = dest[ 0] * rotate[ 0] + dest[ 4] * rotate[ 1];
+	result[ 1] = dest[ 1] * rotate[ 0] + dest[ 5] * rotate[ 1];
+	result[ 2] = dest[ 2] * rotate[ 0] + dest[ 6] * rotate[ 1];
+	result[ 3] = dest[ 3] * rotate[ 0] + dest[ 7] * rotate[ 1];
+
+	result[ 4] = dest[ 0] * rotate[ 4] + dest[ 4] * rotate[ 5];
+	result[ 5] = dest[ 1] * rotate[ 4] + dest[ 5] * rotate[ 5];
+	result[ 6] = dest[ 2] * rotate[ 4] + dest[ 6] * rotate[ 5];
+	result[ 7] = dest[ 3] * rotate[ 4] + dest[ 7] * rotate[ 5];
+
+	memcpy( dest, result, sizeof( float ) * 8 );
+}
