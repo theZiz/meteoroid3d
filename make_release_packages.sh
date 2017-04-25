@@ -1,6 +1,6 @@
 #!/bin/sh
 PROGRAM="meteoroid3d"
-VERSION="1.0.2"
+VERSION="1.0.3"
 DEST=./build/*
 echo "<html>" > index.htm
 echo "<head>" >> index.htm
@@ -25,7 +25,7 @@ do
 			cd ..
 			echo "<a href=$PROGRAM.pnd>$NAME</a></br>" >> ../../index.htm
 		else
-			if [ $NAME = "i386" ]; then
+			if [ $NAME = "i386" ] || [ $NAME = "amd64" ]; then
 				tar cfvz "$PROGRAM-$NAME-$VERSION.tar.gz" * > /dev/null
 				mv "$PROGRAM-$NAME-$VERSION.tar.gz" ../..
 				echo "<a href=$PROGRAM-$NAME-$VERSION.tar.gz>$NAME</a></br>" >> ../../index.htm

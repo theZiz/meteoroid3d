@@ -18,6 +18,8 @@
 #include "space.h"
 #include "matrix.h"
 #include "stereo.h"
+#include <string.h>
+#include <stdlib.h>
 
 #define BUCKET 5000
 
@@ -291,7 +293,7 @@ int shoot_next = 100;
 void handle_ship_input(int steps)
 {
 	int i,j;
-	if (spGetInput()->button[SP_BUTTON_LEFT])
+	if (spGetInput()->button[SP_BUTTON_LEFT] || spGetInput()->button[SP_BUTTON_RIGHT])
 	{
 		for (i = 0; i < steps; i++)
 		{

@@ -20,6 +20,7 @@
 #include "stereo.h"
 #include "matrix.h"
 #include "space.h"
+#include "stereo.h"
 
 spNetC4AProfilePointer profile;
 
@@ -48,9 +49,9 @@ void draw(int eye,Uint16 color,spFontPointer font)
 	{
 		spProjectPoint3D(spFloatToFixed(-0.0f), spFloatToFixed(0.0f), spFloatToFixed(-Z0+3.5f),&px,&py,&pz,&w,1);
 		if (get_flip_direction())
-			sprintf(buffer,"Welcome to Meteroid3D (with C4A support)\n\n*Destroy meteroids for beating the highscore\n*Don't get hit (you have 3 lives)\n\nControls:\n"SP_PAD_NAME" Direction ([v] is down, change with [c])\n[l][r]barrel roll\n[w]Boost   [s]Brake   [a]Shoot\n[S]Pause, Exit and volume\n\n[o]Let's go!");
+			sprintf(buffer,"Welcome to Meteroid3D (with C4A support)\n\n*Destroy meteroids for beating the highscore\n*Don't get hit (you have 3 lives)\n\nControls:\n"SP_PAD_NAME" Direction ([v] is down, change with [c])\n[l][r]barrel roll\n[w]Boost   [s]Brake   [a]or[d]Shoot\n[S]Pause, Exit and volume\n\n[o]Let's go!");
 		else
-			sprintf(buffer,"Welcome to Meteroid3D (with C4A support)\n\n*Destroy meteroids for beating the highscore\n*Don't get hit (you have 3 lives)\n\nControls:\n"SP_PAD_NAME" Direction ([^] is down, change with [c])\n[l][r]barrel roll\n[w]Boost   [s]Brake   [a]Shoot\n[S]Pause, Exit and volume\n\n[o]Let's go!");
+			sprintf(buffer,"Welcome to Meteroid3D (with C4A support)\n\n*Destroy meteroids for beating the highscore\n*Don't get hit (you have 3 lives)\n\nControls:\n"SP_PAD_NAME" Direction ([^] is down, change with [c])\n[l][r]barrel roll\n[w]Boost   [s]Brake   [a]or[d]Shoot\n[S]Pause, Exit and volume\n\n[o]Let's go!");
 		spFontDrawMiddle(px,py-font->maxheight*6,pz,buffer,font);	
 	}
 	else

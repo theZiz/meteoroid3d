@@ -17,6 +17,7 @@
 
 #include "matrix.h"
 #include <math.h>
+#include <string.h>
 
 void mulSparrowMatrix(float* matrix)
 {

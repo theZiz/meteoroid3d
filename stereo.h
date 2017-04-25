@@ -30,6 +30,7 @@ void init_stereo();
 int stereo_loop ( void ( *draw )( int, Uint16, spFontPointer ), int ( *calc )( Uint32 steps ));
 void set_color(int lr,int lg,int lb,int rr,int rg,int rb);
 int get_brightness();
+void set_brightness(int b);
 void set_flipped(int f);
 int get_flipped();
 void set_alltime(int value);
@@ -38,4 +39,5 @@ int get_volume();
 void set_volume(int v);
 int get_flip_direction();
 void set_flip_direction(int v);
+void save_stereo();
 #endif

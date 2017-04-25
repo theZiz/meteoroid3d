@@ -16,6 +16,8 @@
   * Alexander Matthes (Ziz) , zizsdl_at_googlemail.com */
 
 #include "stereo.h"
+#include "glasses.h"
+#include <string.h>
 
 spFontPointer font = NULL;
 spFontPointer left_font = NULL;

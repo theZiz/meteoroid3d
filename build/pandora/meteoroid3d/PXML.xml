@@ -37,12 +37,14 @@ Meteoroid3D
 The first REAL 3D game for the Pandora
 Version 1.0.2:
 - added barrel roll
+- added second shoot button for the lulz
 </description>
 </descriptions>
 <description lang="en_US">
 The first REAL 3D game for the Pandora
 Version 1.0.2:
 - added barrel roll
+- added second shoot button for the lulz
 </description>
 <!--Extra <description> block for compatibility with OS versions before HF6-->
 <icon src="./meteoroid3d.png"/>
