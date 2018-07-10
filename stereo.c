@@ -3,15 +3,15 @@
   * it under the terms of the GNU General Public License as published by
   * the Free Software Foundation, either version 2 of the License, or
   * (at your option) any later version.
-  * 
+  *
   * meteoroid3d is distributed in the hope that it will be useful,
   * but WITHOUT ANY WARRANTY; without even the implied warranty of
   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   * GNU General Public License for more details.
-  * 
+  *
   * You should have received a copy of the GNU General Public License
   * along with meteoroid3d.  If not, see <http://www.gnu.org/licenses/>
-  * 
+  *
   * For feedback and questions about my Files and Projects please mail me,
   * Alexander Matthes (Ziz) , zizsdl_at_googlemail.com */
 
@@ -148,11 +148,12 @@ void reload_font()
 
 void resize( Uint16 w, Uint16 h )
 {
-	spSelectRenderTarget(spGetWindowSurface());
+	screen = spGetWindowSurface();
+	spSelectRenderTarget(screen);
 	if (right_screen)
 		spDeleteSurface(right_screen);
 	right_screen = spCreateSurface(screen->w,screen->h);
-	
+
 	spSetPerspectiveStereoscopic( middle_projection, 45.0, ( float )screen->w / ( float )screen->h, 1.0, 100.0f, Z0, 0);
 	spStereoCreateProjectionMatrixes( left_projection, right_projection, 45.0, ( float )screen->w / ( float )screen->h, 1.0, 100.0f, Z0, DISTANCE , crossedEyes);
 
@@ -164,7 +165,7 @@ void ( *draw_stereo_callback )( int, Uint16, spFontPointer) = NULL;
 void draw_stereo(void)
 {
 	Sint32* modellViewMatrix=spGetMatrix();
-	int eye;	
+	int eye;
 	if (get_glasses() == 0)
 	{
 		spSelectRenderTarget(screen);
@@ -193,7 +194,7 @@ void draw_stereo(void)
 				font = right_font;
 				break;
 		}
-		draw_stereo_callback(eye,color,font);	
+		draw_stereo_callback(eye,color,font);
 	}
 	if (get_glasses() != 0)
 		spStereoMergeSurfaces(screen,right_screen,crossedEyes);
@@ -210,7 +211,7 @@ int stereo_loop ( void ( *draw )( int, Uint16, spFontPointer), int ( *calc )( Ui
 {
 	void ( *old_callback )( int, Uint16, spFontPointer) = draw_stereo_callback;
 	draw_stereo_callback = draw;
-	int res = spLoop(draw_stereo,calc,10,resize,NULL);	
+	int res = spLoop(draw_stereo,calc,10,resize,NULL);
 	draw_stereo_callback = old_callback;
 	return res;
 }
