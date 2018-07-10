@@ -1,6 +1,6 @@
 #!/bin/sh
 PROGRAM="meteoroid3d"
-VERSION="1.0.3"
+VERSION="1.0.3.1"
 DEST=./build/*
 echo "<html>" > index.htm
 echo "<head>" >> index.htm
